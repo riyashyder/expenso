@@ -1,5 +1,7 @@
+import 'package:expense_tracker/features/categories/view/category_view.dart';
 import 'package:flutter/material.dart';
 
+import '../../features/categories/view/create_category_view.dart';
 import '../../features/dashboard/view/dashboard_screen.dart';
 import '../../features/report/view/report_screen.dart';
 import '../../features/settings/view/settings_screen.dart';
@@ -11,6 +13,7 @@ class NavWidgets {
     List<Widget> widgets = [
       DashboardScreen(),
       TransactionsScreen(),
+      CategoriesView(),
       ReportsScreen(),
       SettingsScreen(),
       // const TransactionsWidget(),

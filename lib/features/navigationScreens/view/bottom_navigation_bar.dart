@@ -73,6 +73,7 @@ class _NavigationScreenState extends State<NavigatioScreen> {
 
                 // Bottom navigation bar
                 bottomNavigationBar: BottomNavigationBar(
+                  backgroundColor: AppthemeData.secondaryColor,
                     onTap: (value) {
                       if (value >= NavWidgets.getNavWidgets(userRole).length) return; // Prevent index out of bounds
                       bottomNavProvider.setIndex(value);
@@ -87,6 +88,7 @@ class _NavigationScreenState extends State<NavigatioScreen> {
 
                       BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
                       BottomNavigationBarItem(icon: Icon(Icons.swap_horiz), label: "Transactions"),
+                      BottomNavigationBarItem(icon: Icon(Icons.monetization_on_sharp), label: "Category"),
                       BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Reports"),
                       BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
                       // // Dashboard Icon

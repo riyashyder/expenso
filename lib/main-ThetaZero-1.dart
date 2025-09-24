@@ -34,10 +34,7 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => BudgetController(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => CategoryController(),
-          child: const MyApp(),
-        ),
+        // ChangeNotifierProvider(create: (_) => CategoryController()),
         ChangeNotifierProvider(create: (_) => TransactionsController()),
         ChangeNotifierProvider(create: (_) => ReportsController()),
         ChangeNotifierProvider(create: (_) => ForgotPassEmailController()),

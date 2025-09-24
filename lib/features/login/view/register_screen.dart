@@ -97,7 +97,7 @@ import '../controller/login_controller.dart';
                       label: "First Name",
                       controller: registerController.fullNameController,
                       enabled: !registerController.isLoading,
-                      svgname: 'assets/svg/name.svg',
+                      svgname: 'assets/svg/svgcopy/name.svg',
                       allowOnlyAlphabets: true,
                       onchange: (value) =>
                           registerController.checkFormCompletion(),
@@ -118,7 +118,7 @@ import '../controller/login_controller.dart';
                       label: localizationController.getTextValue("LAST_NAME"),
                       controller: registerController.lastNameController,
                       enabled: !registerController.isLoading,
-                      svgname: 'assets/svg/name.svg',
+                      svgname: 'assets/svg/svgcopy/name.svg',
                       allowOnlyAlphabets: true,
                       onchange: (email) =>
                           registerController.checkFormCompletion(),
@@ -161,7 +161,7 @@ import '../controller/login_controller.dart';
                     CustomTextField(
                       label: localizationController.getTextValue("LOGIN_EMAIL"),
                       controller: registerController.emailController,
-                      svgname: 'assets/svg/icn_mail copy.svg',
+                      svgname: 'assets/svg/svgcopy/icn_mail copy.svg',
                       enabled: !registerController.isLoading,
                       isEmail: true,
                       keyboardType: TextInputType.emailAddress,
@@ -189,7 +189,7 @@ import '../controller/login_controller.dart';
                       hide: true,
                       showEyeIcon: true,
                       isEmail: false,
-                      svgname: 'assets/svg/icn_password_lock copy.svg',
+                      svgname: 'assets/svg/svgcopy/icn_password_lock copy.svg',
                       onchange: (_) {
                         registerController.checkFormCompletion();
                         formKey.currentState?.validate(); // ✅ triggers confirm field validation too
@@ -222,7 +222,7 @@ import '../controller/login_controller.dart';
                       showEyeIcon: true,
                       isEmail: false,
                       enabled: !registerController.isLoading,
-                      svgname: 'assets/svg/icn_password_lock copy.svg',
+                      svgname: 'assets/svg/svgcopy/icn_password_lock copy.svg',
                       onchange: (_) {
                         registerController.checkFormCompletion();
                         formKey.currentState?.validate(); // ✅ triggers password validation too

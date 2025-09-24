@@ -30,14 +30,11 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => CategoryController()),
         ChangeNotifierProvider(
             create: (_) => AccountController()..loadAccounts()),
         ChangeNotifierProvider(
           create: (_) => BudgetController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => CategoryController(),
-          child: const MyApp(),
         ),
         ChangeNotifierProvider(create: (_) => TransactionsController()),
         ChangeNotifierProvider(create: (_) => ReportsController()),
@@ -61,6 +58,7 @@ void main() {
             timerController: otpTimer,
           ),
         ),
+        // ChangeNotifierProvider(create: (_) => CategoryController())
 
       ],
       child: const MyApp(),

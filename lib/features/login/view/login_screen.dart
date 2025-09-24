@@ -1,6 +1,7 @@
   import 'dart:convert';
 
 import 'package:expense_tracker/features/login/view/widget/custom_textfield.dart';
+import 'package:expense_tracker/utils/devices/get_localization_provider.dart';
 
   import 'package:flutter/material.dart';
   import 'package:http/http.dart' as http;
@@ -12,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
   import '../../../shared/widgets/custom_widgets/app_elevated_button.dart';
   import '../../../shared/widgets/custom_widgets/page_transition.dart';
   import '../../../shared/widgets/styles/styles.dart';
-  import '../../../utils/devices/get_localization_provider.dart';
+
 
   import '../../forgotPasswordFlow/view/forgot_pass_email.dart';
   import '../../navigationScreens/view/bottom_navigation_bar.dart';
@@ -72,7 +73,7 @@ import 'package:shared_preferences/shared_preferences.dart';
             labelText: localizationController.getTextValue("LOGIN_EMAIL"),
             controller: loginController.emailController,
             keyEmail: true,
-            prefixIconAsset: 'assets/svg/icn_mail.svg',
+            prefixIconAsset: 'assets/svg/svgcopy/icn_mail.svg',
             enable: !loginController.isLoading,
             allowSpaces: false,
             onChanged: (email) => loginController.validateEmail(email),
@@ -95,7 +96,7 @@ import 'package:shared_preferences/shared_preferences.dart';
                 isPasswordField: true,
                 enable: !loginController.isLoading,
                 allowSpaces: false,
-                prefixIconAsset: 'assets/svg/icn_password_lock.svg',
+                prefixIconAsset: 'assets/svg/svgcopy/icn_password_lock.svg',
                 onChanged: (password) =>
                     loginController.validatePassword(password),
                 togglePasswordVisibility:
@@ -187,7 +188,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
                         // Save token and user details in SharedPreferences
                         final prefs = await SharedPreferences.getInstance();
-                        await prefs.setString('access_token', accessToken);
+                          await prefs.setString('access_token', accessToken);
                         await prefs.setString('user_email', userDetails['email']);
                         await prefs.setString('user_first_name', userDetails['first_name']);
                         await prefs.setString('user_last_name', userDetails['last_name']);
