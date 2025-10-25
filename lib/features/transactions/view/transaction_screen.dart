@@ -4,54 +4,196 @@ import 'package:provider/provider.dart';
 import '../controller/transaction_controller.dart';
 import '../model/transaction_item.dart';
 
-class TransactionsScreen extends StatelessWidget {
+class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
+
+  @override
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
+}
+
+class _TransactionsScreenState extends State<TransactionsScreen> {
+
+  DateTime? _filterFromDate;
+  DateTime? _filterToDate;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      final controller = context.read<TransactionsController>();
+
+      final now = DateTime.now();
+      final from = DateTime(now.year, now.month, 1).toIso8601String().split('T').first;
+      final to = DateTime(now.year, now.month + 1, 0).toIso8601String().split('T').first;
+
+      controller.fetchTransactions(from: from, to: to);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TransactionsController>();
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("Transactions", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-      //   centerTitle: true,
-      //   elevation: 0,
-      //   backgroundColor: Colors.white,
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back, color: Colors.black),
-      //     onPressed: () => Navigator.pop(context),
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.filter_list, color: Colors.black),
-      //       onPressed: () {},
-      //     ),
-      //   ],
-      // ),
-      body: ListView(
+      body: controller.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
         children: [
-          _buildSummaryCard(),
+          // Add this floating button or any top button for filter
+
+
+          _buildSummaryCard(controller),
           _buildTabs(controller),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(onTap:(){
+                _openFilterBottomSheet(context);
+              },child: Icon(Icons.filter_list)),
+            ),
+          ),
           ..._buildGroupedTransactions(controller.filteredTransactions),
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: 1,
-      //   type: BottomNavigationBarType.fixed,
-      //   selectedItemColor: Colors.blue,
-      //   unselectedItemColor: Colors.grey,
-      //   items: const [
-      //     BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
-      //     BottomNavigationBarItem(icon: Icon(Icons.swap_horiz), label: "Transactions"),
-      //     BottomNavigationBarItem(icon: Icon(Icons.category), label: "Categories"),
-      //     BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Reports"),
-      //     BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
-      //   ],
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) => const TransactionInputSheet(),
+          );
+        },
+        backgroundColor: Colors.blue,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 
-  Widget _buildSummaryCard() {
+  Widget _buildDateFilter(TransactionsController controller) {
+    return Card(
+      margin: const EdgeInsets.all(16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Filter by Date",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: _filterFromDate ?? DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2030),
+                      );
+                      if (picked != null) setState(() => _filterFromDate = picked);
+                    },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: "Start Date",
+                        border: OutlineInputBorder(),
+                      ),
+                      child: Text(
+                        _filterFromDate == null
+                            ? "Select date"
+                            : _filterFromDate!.toIso8601String().split('T').first,
+                        style: TextStyle(
+                          color: _filterFromDate == null ? Colors.grey : Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: InkWell(
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: _filterToDate ?? DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2030),
+                      );
+                      if (picked != null) setState(() => _filterToDate = picked);
+                    },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: "End Date",
+                        border: OutlineInputBorder(),
+                      ),
+                      child: Text(
+                        _filterToDate == null
+                            ? "Select date"
+                            : _filterToDate!.toIso8601String().split('T').first,
+                        style: TextStyle(
+                          color: _filterToDate == null ? Colors.grey : Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _filterFromDate = null;
+                      _filterToDate = null;
+                    });
+                    controller.fetchTransactions(); // reset filter
+                  },
+                  child: const Text("Clear"),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: (_filterFromDate != null && _filterToDate != null)
+                      ? () {
+                    if (_filterToDate!.isBefore(_filterFromDate!)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("End date cannot be before start date"),
+                        ),
+                      );
+                      return;
+                    }
+
+                    final from = _filterFromDate!.toIso8601String().split('T').first;
+                    final to = _filterToDate!.toIso8601String().split('T').first;
+                    controller.fetchTransactions(from: from, to: to);
+                  }
+                      : null,
+                  child: const Text("Apply"),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Widget _buildSummaryCard(TransactionsController controller) {
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -61,38 +203,33 @@ class TransactionsScreen extends StatelessWidget {
         boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6)],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
-              Text("Date Range: ", style: TextStyle(color: Colors.grey)),
-              Text("This Month", style: TextStyle(fontWeight: FontWeight.bold)),
-              Spacer(),
-              Text("Change", style: TextStyle(color: Colors.blue)),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const [
-              Column(
-                children: [
-                  Text("Income", style: TextStyle(color: Colors.grey)),
-                  Text("\$1,200.00", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 18)),
-                ],
-              ),
-              Column(
-                children: [
-                  Text("Expenses", style: TextStyle(color: Colors.grey)),
-                  Text("-\$850.00", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18)),
-                ],
-              ),
+            children: [
+              _summaryTile("Income", controller.totalIncome, Colors.green),
+              _summaryTile("Expenses", controller.totalExpense, Colors.red),
+              _summaryTile("Net", controller.netTotal, Colors.blue),
             ],
           ),
         ],
       ),
     );
   }
+
+  Widget _summaryTile(String title, double amount, Color color) {
+    return Column(
+      children: [
+        Text(title, style: const TextStyle(color: Colors.grey)),
+        Text(
+          "\$${amount.toStringAsFixed(2)}",
+          style: TextStyle(
+              color: color, fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+      ],
+    );
+  }
+
 
   Widget _buildTabs(TransactionsController controller) {
     return Row(
@@ -135,6 +272,7 @@ class TransactionsScreen extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(entry.key, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
@@ -144,6 +282,198 @@ class TransactionsScreen extends StatelessWidget {
       );
     }).toList();
   }
+
+  void _openFilterBottomSheet(BuildContext context) {
+    final controller = context.read<TransactionsController>();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        DateTime? tempFrom = _filterFromDate;
+        DateTime? tempTo = _filterToDate;
+
+        // Use StatefulBuilder to rebuild bottom sheet
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 24,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 5,
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    "Filter Transactions",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Start Date
+                  InkWell(
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: tempFrom ?? DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2030),
+                      );
+                      if (picked != null) {
+                        setModalState(() => tempFrom = picked);
+                      }
+                    },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: "Start Date",
+                        border: OutlineInputBorder(),
+                      ),
+                      child: Text(
+                        tempFrom == null
+                            ? "Select date"
+                            : tempFrom!.toIso8601String().split('T').first,
+                        style: TextStyle(
+                          color: tempFrom == null ? Colors.grey : Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // End Date
+                  InkWell(
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: tempTo ?? DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2030),
+                      );
+                      if (picked != null) {
+                        setModalState(() => tempTo = picked);
+                      }
+                    },
+                    child: InputDecorator(
+                      decoration: const InputDecoration(
+                        labelText: "End Date",
+                        border: OutlineInputBorder(),
+                      ),
+                      child: Text(
+                        tempTo == null
+                            ? "Select date"
+                            : tempTo!.toIso8601String().split('T').first,
+                        style: TextStyle(
+                          color: tempTo == null ? Colors.grey : Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed:(tempFrom != null && tempTo != null) ? () {
+                          final now = DateTime.now();
+                          final currentMonthStart = DateTime(now.year, now.month, 1);
+                          final currentMonthEnd = DateTime(now.year, now.month + 1, 0);
+                          setModalState(() {
+                            tempFrom = null;
+                            tempTo = null;
+                          });
+
+
+                          setState(() {
+                            _filterFromDate = currentMonthStart;
+                            _filterToDate = currentMonthEnd;
+                          });
+
+                          // Apply filter with current month
+                          controller.fetchTransactions();
+
+                          Navigator.pop(context);
+                        } : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade900, // Dark blue
+                          foregroundColor: Colors.white, // White text
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          "Clear",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                      const SizedBox(width: 8),
+
+                      ElevatedButton(
+                        onPressed: (tempFrom != null && tempTo != null)
+                            ? () {
+                          if (tempTo!.isBefore(tempFrom!)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("End date cannot be before start date"),
+                              ),
+                            );
+                            return;
+                          }
+                          setState(() {
+                            _filterFromDate = tempFrom;
+                            _filterToDate = tempTo;
+                          });
+                          final from = tempFrom!.toIso8601String().split('T').first;
+                          final to = tempTo!.toIso8601String().split('T').first;
+                          controller.fetchTransactions(from: from, to: to);
+                          Navigator.pop(context);
+                        }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.shade900, // Dark blue
+                          foregroundColor: Colors.white, // White text
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          "Apply",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  )
+
+
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
 
   Widget _buildTransactionTile(TransactionItem transaction) {
     return Container(
@@ -164,6 +494,177 @@ class TransactionsScreen extends StatelessWidget {
           style: TextStyle(
             color: transaction.amount < 0 ? Colors.red : Colors.green,
             fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+class TransactionInputSheet extends StatefulWidget {
+  const TransactionInputSheet({super.key});
+
+  @override
+  State<TransactionInputSheet> createState() => _TransactionInputSheetState();
+}
+
+class _TransactionInputSheetState extends State<TransactionInputSheet> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  DateTime? _selectedDate;
+  String _selectedType = 'income';
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final controller = context.read<TransactionsController>();
+
+    await controller.createTransaction(
+      expenseDate: _selectedDate?.toIso8601String().split('T').first ?? '',
+      type: _selectedType,
+      category: _categoryController.text.trim(),
+      amount: double.parse(_amountController.text),
+    );
+
+    if (mounted) {
+      Navigator.pop(context); // Close bottom sheet
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Transaction created successfully!')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 5,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              const Text(
+                "Add Transaction",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+
+              // Amount field
+              TextFormField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Amount",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Enter amount';
+                  if (double.tryParse(value) == null) return 'Enter valid number';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Category field
+              TextFormField(
+                controller: _categoryController,
+                decoration: const InputDecoration(
+                  labelText: "Category",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                value == null || value.isEmpty ? 'Enter category' : null,
+              ),
+              const SizedBox(height: 16),
+
+              // Transaction Type dropdown
+              DropdownButtonFormField<String>(
+                value: _selectedType,
+                items: const [
+                  DropdownMenuItem(value: "income", child: Text("Income")),
+                  DropdownMenuItem(value: "expense", child: Text("Expense")),
+                ],
+                onChanged: (value) => setState(() => _selectedType = value!),
+                decoration: const InputDecoration(
+                  labelText: "Transaction Type",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Date picker
+              InkWell(
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2030),
+                  );
+                  if (picked != null) {
+                    setState(() => _selectedDate = picked);
+                  }
+                },
+                child: InputDecorator(
+                  decoration: const InputDecoration(
+                    labelText: "Date",
+                    border: OutlineInputBorder(),
+                  ),
+                  child: Text(
+                    _selectedDate == null
+                        ? "Select date"
+                        : _selectedDate!.toIso8601String().split('T').first,
+                    style: TextStyle(
+                        color: _selectedDate == null
+                            ? Colors.grey
+                            : Colors.black87),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Submit button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade900, // Dark blue
+                    foregroundColor: Colors.white, // White text
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12), // Rounded rectangle
+                    ),
+                  ),
+                  child: const Text(
+                    "Create Transaction",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+
+            ],
           ),
         ),
       ),

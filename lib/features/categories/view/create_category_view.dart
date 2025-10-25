@@ -112,6 +112,56 @@ import '../controller/create_category_controller.dart';
                 maxLines: 2,
               ),
               const SizedBox(height: 28),
+              const Text(
+                "Category Type",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.grey.shade300),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    dropdownColor: Colors.white, // ✅ change popup background color
+                    value: controller.selectedType,
+                    isExpanded: true,
+                    icon: const Icon(Icons.keyboard_arrow_down, color: Colors.blueAccent),
+                    hint: const Text("Select Category Type"),
+                    items: controller.categoryTypes.map((type) {
+                      return DropdownMenuItem(
+                        value: type,
+                        child: Text(
+                          type,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        controller.selectType(value);
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+
+              ),
+              const SizedBox(height: 28),
+
 
               const Text(
                 "Choose an Icon",
@@ -171,6 +221,7 @@ import '../controller/create_category_controller.dart';
                     final result = await controller.createCategory(
                       name: nameController.text.trim(),
                       description: descController.text.trim(),
+                      type: controller.selectedType,
                     );
                     if (context.mounted) {
                       showTopSnackBar(

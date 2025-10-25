@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-
 import '../model/transaction_item.dart';
+import 'transaction_api_controller.dart';
 
 class TransactionsController extends ChangeNotifier {
+  final TransactionApiController apiController = TransactionApiController();
+
   String selectedFilter = "All";
+  List<TransactionItem> transactions = [];
 
-  List<TransactionItem> transactions = [
-    TransactionItem(title: "Groceries", category: "Food", amount: -25.00, dateGroup: "Today", icon: Icons.shopping_cart),
-    TransactionItem(title: "Dinner", category: "Food", amount: -45.00, dateGroup: "Today", icon: Icons.restaurant),
-    TransactionItem(title: "Transportation", category: "Travel", amount: -15.00, dateGroup: "Today", icon: Icons.directions_car),
+  double totalIncome = 0;
+  double totalExpense = 0;
+  double netTotal = 0;
 
-    TransactionItem(title: "Coffee", category: "Food", amount: -5.00, dateGroup: "Yesterday", icon: Icons.coffee),
-    TransactionItem(title: "Lunch", category: "Food", amount: -20.00, dateGroup: "Yesterday", icon: Icons.fastfood),
-    TransactionItem(title: "Entertainment", category: "Leisure", amount: -30.00, dateGroup: "Yesterday", icon: Icons.movie),
-  ];
+  bool get isLoading => apiController.isLoading;
 
   void changeFilter(String filter) {
     selectedFilter = filter;
@@ -29,5 +28,58 @@ class TransactionsController extends ChangeNotifier {
       return transactions.where((t) => t.amount < 0).toList();
     }
     return transactions;
+  }
+
+  Future<void> fetchTransactions({String? from, String? to}) async {
+    final result = await apiController.fetchTransactions(
+      from: from ?? "", // send empty string if not provided
+      to: to ?? "",
+    );
+
+    print("fetchTransactions result");
+    print(result);
+
+    if (result["success"]) {
+      final summary = result["summary"];
+      totalIncome = (summary["totalIncome"] ?? 0).toDouble();
+      totalExpense = (summary["totalExpense"] ?? 0).toDouble();
+      netTotal = (summary["netTotal"] ?? 0).toDouble();
+
+      final expenses = result["expenses"] as List<dynamic>;
+      transactions = expenses.map((e) {
+        return TransactionItem(
+          title: e["category"] ?? "Transaction",
+          category: e["category"] ?? "",
+          amount: double.tryParse(e["amount"].toString()) ?? 0,
+          dateGroup: e["expenseDate"]?.split("T")[0] ?? "Unknown",
+          icon: e["type"] == "income"
+              ? Icons.arrow_downward
+              : Icons.arrow_upward,
+        );
+      }).toList();
+      notifyListeners();
+    } else {
+      debugPrint("Fetch failed: ${result['message']}");
+    }
+  }
+
+  Future<void> createTransaction({
+    required String expenseDate,
+    required String type,
+    required String category,
+    required double amount,
+  }) async {
+    final result = await apiController.createTransaction(
+      expenseDate: expenseDate,
+      type: type,
+      category: category,
+      amount: amount,
+    );
+
+    if (result["success"]) {
+      await fetchTransactions(); // refresh list after creating new transaction
+    } else {
+      debugPrint("Error: ${result['message']}");
+    }
   }
 }

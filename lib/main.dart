@@ -23,6 +23,7 @@ import 'features/navigationScreens/view/bottom_navigation_bar.dart';
 import 'features/onboarding/view/welcome_view.dart';
 import 'features/report/controller/report_controller.dart';
 import 'features/settings/controller/settings_controller.dart';
+import 'features/transactions/controller/transaction_api_controller.dart';
 import 'features/transactions/controller/transaction_controller.dart';
 
 void main() {
@@ -37,6 +38,7 @@ void main() {
           create: (_) => BudgetController(),
         ),
         ChangeNotifierProvider(create: (_) => TransactionsController()),
+        ChangeNotifierProvider(create: (_) => TransactionApiController()),
         ChangeNotifierProvider(create: (_) => ReportsController()),
         ChangeNotifierProvider(create: (_) => ForgotPassEmailController()),
         ChangeNotifierProvider(create: (_) => AppLocalizationController()),

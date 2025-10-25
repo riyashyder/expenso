@@ -38,6 +38,14 @@ class CategoryController with ChangeNotifier {
     CategoryIcon(id: 6, icon: Icons.child_friendly),
   ];
 
+  List<String> categoryTypes = ["Expense", "Income", "Investment", "Savings"];
+  String? selectedType;
+
+  void selectType(String type) {
+    selectedType = type;
+    notifyListeners();
+  }
+
   void selectIcon(int id) {
     selectedIconId = id;
     notifyListeners();
@@ -64,6 +72,8 @@ class CategoryController with ChangeNotifier {
         headers: {"Authorization": "Bearer $token"},
       );
 
+      print("get categories response");
+      print(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body)["data"] as List;
         categories = data.map((e) => CategoryModel.fromJson(e)).toList();
@@ -145,6 +155,7 @@ class CategoryController with ChangeNotifier {
   Future<Map<String, dynamic>> createCategory({
     required String name,
     String? description,
+    String? type,
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -159,12 +170,17 @@ class CategoryController with ChangeNotifier {
         },
         body: jsonEncode({
           "name": name,
+          "type": (type ?? "expense").toLowerCase(),
           "description": description ?? "",
           "icon": selectedIconId,
         }),
       );
+      print("create category");
+      print(response.body);
 
       final responseData = jsonDecode(response.body);
+      print("create response data");
+      print(responseData);
 
       if (response.statusCode == 201) {
         await getCategories(); // refresh list

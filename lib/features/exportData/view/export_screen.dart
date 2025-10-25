@@ -77,7 +77,7 @@ class ExportScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: controller.exportData,
+                onPressed: () => controller.exportData(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppthemeData.primaryBackground,
                   padding: const EdgeInsets.symmetric(vertical: 14),
