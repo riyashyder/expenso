@@ -1,9 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/constants/image_strings.dart';
+
 import '../../../core/constants/main_appbar.dart';
 import '../../../core/constants/navWidgets.dart';
 import '../../../core/localization/app_localization_controller.dart';
@@ -14,7 +13,6 @@ import '../../../shared/widgets/styles/styles.dart';
 import '../../../utils/devices/get_localization_provider.dart';
 import '../controller/bottom_nav_provider.dart';
 
-
 class NavigatioScreen extends StatefulWidget {
   const NavigatioScreen({super.key});
 
@@ -23,120 +21,157 @@ class NavigatioScreen extends StatefulWidget {
 }
 
 class _NavigationScreenState extends State<NavigatioScreen> {
-  String userRole = ''; // Store user role
+  String userRole = '';
 
   @override
   void initState() {
     super.initState();
-    // Future.microtask(() {
-    //   Provider.of<Alertcontroller>(context, listen: false).getNotificationCount();
-    // });
     _loadUserRole();
   }
 
   Future<void> _loadUserRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userRole = prefs.getString('role') ?? ''; // Default to empty
-    });
+    setState(() => userRole = prefs.getString('role') ?? '');
   }
 
   @override
   Widget build(BuildContext context) {
-    // final profilePictureController =
-    //     Provider.of<ProfilePictureController>(context);
-    // final selectedProfile = profilePictureController.profilePicture;
-
     final bottomNavProvider = Provider.of<BottomNavProvider>(context);
-    final localizationController = getLocalizationController(context, listen: true);
-    final scaffoldkey = GlobalKey<ScaffoldState>();
+    final localizationController =
+    getLocalizationController(context, listen: true);
 
-    // ignore: deprecated_member_use
     return Consumer<ConnectivityProvider>(
       builder: (context, value, child) {
-        if (value.isConnected) {
-          return PopScope(
-            canPop: bottomNavProvider.canPOP(),
-            onPopInvokedWithResult: (didPop, result) async => bottomNavProvider.goBack(),
-            child: Directionality(
-              textDirection:
-              AppLocalizationController.currentAppLanguage == 'ar' ? TextDirection.rtl : TextDirection.ltr,
-              child: Scaffold(
-                key: scaffoldkey,
-                resizeToAvoidBottomInset: true,
-                backgroundColor: Colors.white,
+        if (!value.isConnected) return NoConnectivityScreen();
 
-                // Appbar
-                appBar: const PreferredSize(preferredSize: Size.fromHeight(100), child: MainAppBar()),
+        return PopScope(
+          canPop: bottomNavProvider.canPOP(),
+          onPopInvokedWithResult: (didPop, result) async =>
+              bottomNavProvider.goBack(),
+          child: Directionality(
+            textDirection:
+            AppLocalizationController.currentAppLanguage == 'ar'
+                ? TextDirection.rtl
+                : TextDirection.ltr,
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: const PreferredSize(
+                  preferredSize: Size.fromHeight(100),
+                  child: MainAppBar()),
 
-                body: NavWidgets.getNavWidgets(userRole)[bottomNavProvider.selectedIndex],
+              body: NavWidgets.getNavWidgets(userRole)[bottomNavProvider.selectedIndex],
 
-                // Bottom navigation bar
-                bottomNavigationBar: BottomNavigationBar(
-                  backgroundColor: AppthemeData.secondaryColor,
-                    onTap: (value) {
-                      if (value >= NavWidgets.getNavWidgets(userRole).length) return; // Prevent index out of bounds
-                      bottomNavProvider.setIndex(value);
-                    },
-                    currentIndex: bottomNavProvider.selectedIndex,
-                    iconSize: 20,
-                    selectedFontSize: 10,
-                    unselectedFontSize: 10,
-                    selectedItemColor: AppthemeData.buttonColor,
-                    unselectedItemColor: Colors.black,
-                    items: [
+              // -------------------------
+              //  FLOATING BUBBLE NAV BAR
+              // -------------------------
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.only(left: 10,right: 10,bottom: 20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      // Strong bottom lift shadow
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 30,
+                        spreadRadius: 2,
+                        offset: Offset(0, 10),
+                      ),
 
-                      BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
-                      BottomNavigationBarItem(icon: Icon(Icons.swap_horiz), label: "Transactions"),
-                      BottomNavigationBarItem(icon: Icon(Icons.monetization_on_sharp), label: "Category"),
-                      BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Reports"),
-                      BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
-                      // // Dashboard Icon
-                      //   BottomNavigationBarItem(
-                      //     icon: SvgPicture.asset(ImageandLogos.dashboradoutline),
-                      //     activeIcon: SvgPicture.asset(ImageandLogos.dashboradblue),
-                      //     label: localizationController.getTextValue("BOTTOM_NAV_OPT_ONE"),
-                      //   ),
-                      // // Payments Icon
-                      //   BottomNavigationBarItem(
-                      //     icon: SvgPicture.asset(ImageandLogos.paymentsoutline),
-                      //     activeIcon: SvgPicture.asset(ImageandLogos.paymentsblue),
-                      //     label: localizationController.getTextValue("BOTTOM_NAV_OPT_TWO"),
-                      //   ),
-                      // // Transactions Icon
-                      // BottomNavigationBarItem(
-                      //   icon: SvgPicture.asset(ImageandLogos.transactionoutline),
-                      //   activeIcon: SvgPicture.asset(ImageandLogos.transactionblue),
-                      //   label: localizationController.getTextValue("BOTTOM_NAV_OPT_THREE"),
-                      // ),
-                      // // Change Request Icon
-                      // BottomNavigationBarItem(
-                      //   icon: SvgPicture.asset(ImageandLogos.changreqoutline),
-                      //   activeIcon: SvgPicture.asset(ImageandLogos.changereqblue),
-                      //   label: localizationController.getTextValue("BOTTOM_NAV_OPT_FOUR"),
-                      // ),
-                      // // Profile Icon
-                      // BottomNavigationBarItem(
-                      //   icon: SvgPicture.asset(
-                      //     ImageandLogos.settingout,
-                      //     width: 20,
-                      //     height: 20,
-                      //   ),
-                      //   activeIcon: SvgPicture.asset(
-                      //     ImageandLogos.settingb,
-                      //     width: 20,
-                      //     height: 20,
-                      //   ),
-                      //   label: localizationController.getTextValue("SETTINGS"),
-                      // )
-                    ]),
+                      // Softer surrounding glow
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _navItem(
+                        icon: Icons.dashboard,
+                        label: "Dashboard",
+                        index: 0,
+                        isActive: bottomNavProvider.selectedIndex == 0,
+                        onTap: () => bottomNavProvider.setIndex(0),
+                      ),
+                      _navItem(
+                        icon: Icons.swap_horiz,
+                        label: "Transactions",
+                        index: 1,
+                        isActive: bottomNavProvider.selectedIndex == 1,
+                        onTap: () => bottomNavProvider.setIndex(1),
+                      ),
+                      _navItem(
+                        icon: Icons.monetization_on_sharp,
+                        label: "Category",
+                        index: 2,
+                        isActive: bottomNavProvider.selectedIndex == 2,
+                        onTap: () => bottomNavProvider.setIndex(2),
+                      ),
+                      _navItem(
+                        icon: Icons.settings,
+                        label: "Settings",
+                        index: 3,
+                        isActive: bottomNavProvider.selectedIndex == 3,
+                        onTap: () => bottomNavProvider.setIndex(3),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          );
-        } else {
-          return NoConnectivityScreen();
-        }
+          ),
+        );
       },
     );
   }
+}
+
+// ------------------------------------------------------
+// 🔥 BUBBLE FLOATING NAV ITEM (animated pill like your demo)
+// ------------------------------------------------------
+Widget _navItem({
+  required IconData icon,
+  required String label,
+  required int index,
+  required bool isActive,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: AnimatedContainer(
+      duration: Duration(milliseconds: 250),
+      padding: EdgeInsets.symmetric(horizontal: isActive ? 18 : 0, vertical: 8),
+      decoration: BoxDecoration(
+        color: isActive ? AppthemeData.buttonColor : Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: isActive ? 28 : 24,
+            color: isActive ? Colors.white : Colors.black54,
+          ),
+          if (isActive) ...[
+            SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          ]
+        ],
+      ),
+    ),
+  );
 }

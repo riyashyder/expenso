@@ -11,10 +11,11 @@ import '../../features/transactions/view/transaction_screen.dart';
 class NavWidgets {
   static List<Widget> getNavWidgets(String userRole) {
     List<Widget> widgets = [
-      DashboardScreen(),
+      // DashboardScreen(),
+      ReportsScreen(),
       TransactionsScreen(),
       CategoriesView(),
-      ReportsScreen(),
+      // ReportsScreen(),
       SettingsScreen(),
       // const TransactionsWidget(),
       // const ChangeRequestWidget(),
