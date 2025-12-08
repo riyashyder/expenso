@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 
+import '../../../utils/devices/get_localization_provider.dart';
 import '../controller/report_controller.dart';
 
 class ReportsScreen extends StatelessWidget {
@@ -16,6 +17,10 @@ class ReportsScreen extends StatelessWidget {
         body: Center(child: CircularProgressIndicator()),
       );
     }
+    final localizationController = getLocalizationController(
+      context,
+      listen: false,
+    );
 
     final data = controller.currentData;
 
@@ -48,14 +53,18 @@ class ReportsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _dateBox(
-                    "From: ${controller.startDateString}",
+                    "${localizationController.getTextValue(
+        "REPORTS_FROM",
+        )} ${controller.startDateString}",
                         () => controller.pickStartDate(context),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: _dateBox(
-                    "To: ${controller.endDateString}",
+                    "${localizationController.getTextValue(
+                      "REPORTS_TO",
+                    )} ${controller.endDateString}",
                         () => controller.pickEndDate(context),
                   ),
                 ),
@@ -71,7 +80,9 @@ class ReportsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _valueCard(
-                    title: "Total Income",
+                    title: "${localizationController.getTextValue(
+                      "TOTAL_INCOME",
+                    )}",
                     value: controller.dashboardCards["totalIncome"],
                     color: Colors.green,
                   ),
@@ -79,7 +90,9 @@ class ReportsScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _valueCard(
-                    title: "Total Expense",
+                    title: localizationController.getTextValue(
+                      "TOTAL_EXPENSE",
+                    ),
                     value: controller.dashboardCards["totalExpense"],
                     color: Colors.red,
                   ),
@@ -87,7 +100,9 @@ class ReportsScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: _valueCard(
-                    title: "This\nMonth",
+                    title: localizationController.getTextValue(
+                      "THIS_MONTH_REPORT",
+                    ),
                     value: controller.dashboardCards["thisMonthExpense"],
                     color: Colors.blue,
                   ),
@@ -117,9 +132,13 @@ class ReportsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildChartTypeToggle("Expense", "expense", controller),
+                _buildChartTypeToggle(localizationController.getTextValue(
+                  "EXPENSE",
+                ), "expense", controller),
                 const SizedBox(width: 12),
-                _buildChartTypeToggle("Income", "income", controller),
+                _buildChartTypeToggle(localizationController.getTextValue(
+                  "INCOME",
+                ), "income", controller),
               ],
             ),
 
@@ -133,7 +152,11 @@ class ReportsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${controller.selectedChartType == 'expense' ? 'Expense' : 'Income'} Breakdown",
+                    "${controller.selectedChartType == 'expense' ? '${localizationController.getTextValue(
+                      "EXPENSE",
+                    )}' : '${localizationController.getTextValue(
+                      "INCOME",
+                    )}'} Breakdown",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -192,8 +215,10 @@ class ReportsScreen extends StatelessWidget {
     child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    const Text(
-    "Monthly Income vs Expense",
+     Text(
+    localizationController.getTextValue(
+      "MONTHLY_INCOME_EXPENSE",
+    ),
     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
     ),
 
@@ -204,7 +229,9 @@ class ReportsScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Total Income: ₹${data.monthlyIncome.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+            "${localizationController.getTextValue(
+    "TOTAL_INCOME_AMOUNT",
+    )} ₹${data.monthlyIncome.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -212,7 +239,9 @@ class ReportsScreen extends StatelessWidget {
             ),
           ),
           Text(
-            "Total Expense: ₹${data.monthlyExpense.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+            "${localizationController.getTextValue(
+    "TOTAL_EXPENSE_AMOUNT",
+    )} ₹${data.monthlyExpense.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -261,10 +290,12 @@ class ReportsScreen extends StatelessWidget {
     /// ---------- INCOME BAR ----------
     Row(
     children: [
-    const SizedBox(
+     SizedBox(
     width: 60,
     child: Text(
-    "Income",
+    "${localizationController.getTextValue(
+      "LABEL_INCOME",
+    )}",
     style: TextStyle(
     fontSize: 12, fontWeight: FontWeight.w500),
     ),
@@ -306,10 +337,12 @@ class ReportsScreen extends StatelessWidget {
     /// ---------- EXPENSE BAR ----------
     Row(
     children: [
-    const SizedBox(
+     SizedBox(
     width: 60,
     child: Text(
-    "Expense",
+      localizationController.getTextValue(
+        "LABEL_EXPENSE",
+      ),
     style: TextStyle(
     fontSize: 12, fontWeight: FontWeight.w500),
     ),

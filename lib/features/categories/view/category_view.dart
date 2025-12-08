@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/helpers/snackbar_utils.dart';
+import '../../../utils/devices/get_localization_provider.dart';
 import '../controller/create_category_controller.dart';
 import 'create_category_view.dart';
 
@@ -19,6 +20,7 @@ class CategoriesView extends StatefulWidget {
 class _CategoriesViewState extends State<CategoriesView> {
   late CategoryController controller;
 
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +30,11 @@ class _CategoriesViewState extends State<CategoriesView> {
 
   @override
   Widget build(BuildContext context) {
+    final localizationController = getLocalizationController(
+      context,
+      listen: false,
+    );
+
     return ChangeNotifierProvider.value(
       value: controller,
       child: Consumer<CategoryController>(
@@ -137,8 +144,10 @@ class _CategoriesViewState extends State<CategoriesView> {
                                                   size: 48,
                                                 ),
                                                 const SizedBox(height: 16),
-                                                const Text(
-                                                  "Delete Category?",
+                                                 Text(
+                                                  localizationController.getTextValue(
+                                                    "DELETE_CATEGORY",
+                                                  ),
                                                   style: TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.bold,
@@ -146,8 +155,10 @@ class _CategoriesViewState extends State<CategoriesView> {
                                                   ),
                                                 ),
                                                 const SizedBox(height: 12),
-                                                const Text(
-                                                  "This action cannot be undone.",
+                                                 Text(
+                                                   localizationController.getTextValue(
+                                                     "DELETE_WARNING",
+                                                   ),
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     fontSize: 14,
@@ -163,7 +174,9 @@ class _CategoriesViewState extends State<CategoriesView> {
                                                         foregroundColor: Colors.grey.shade700,
                                                       ),
                                                       onPressed: () => Navigator.pop(context, false),
-                                                      child: const Text("Cancel"),
+                                                      child:  Text( localizationController.getTextValue(
+                                                        "BTN_CANCEL",
+                                                      ),),
                                                     ),
                                                     const SizedBox(width: 12),
                                                     ElevatedButton(
@@ -176,7 +189,9 @@ class _CategoriesViewState extends State<CategoriesView> {
                                                             horizontal: 20, vertical: 12),
                                                       ),
                                                       onPressed: () => Navigator.pop(context, true),
-                                                      child: const Text("Delete",
+                                                      child:  Text( localizationController.getTextValue(
+                                                        "BTN_DELETE",
+                                                      ),
                                                           style: TextStyle(color: Colors.white)),
                                                     ),
                                                   ],
@@ -281,7 +296,9 @@ class _CategoriesViewState extends State<CategoriesView> {
                 );
               },
               icon: const Icon(Icons.add),
-              label: const Text("New"),
+              label:  Text(localizationController.getTextValue(
+                "NEW_CATEGORY",
+              ),),
             ),
 
             // body: ctrl.categories.isEmpty
@@ -351,7 +368,10 @@ class _CategoriesViewState extends State<CategoriesView> {
   void _showEditDialog(BuildContext context, CategoryModel category) {
     final nameController = TextEditingController(text: category.name);
     final descController = TextEditingController(text: category.description);
-
+    final localizationController = getLocalizationController(
+      context,
+      listen: false,
+    );
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -379,8 +399,10 @@ class _CategoriesViewState extends State<CategoriesView> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    "Edit Category",
+                   Text(
+              localizationController.getTextValue(
+              "EDIT_CATEGORY",
+              ),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -394,7 +416,9 @@ class _CategoriesViewState extends State<CategoriesView> {
                     controller: nameController,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.title, color: Colors.blueAccent),
-                      hintText: "Enter category name",
+                      hintText:  localizationController.getTextValue(
+                        "ENTER_CATEGORY_NAME",
+                      ),
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.6),
                       border: OutlineInputBorder(
@@ -411,7 +435,9 @@ class _CategoriesViewState extends State<CategoriesView> {
                     maxLines: 2,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.description, color: Colors.blueAccent),
-                      hintText: "Enter description",
+                      hintText:  localizationController.getTextValue(
+                        "ENTER_DESCRIPTION",
+                      ),
                       filled: true,
                       fillColor: Colors.white.withOpacity(0.6),
                       border: OutlineInputBorder(
@@ -431,7 +457,9 @@ class _CategoriesViewState extends State<CategoriesView> {
                           foregroundColor: Colors.redAccent,
                         ),
                         onPressed: () => Navigator.pop(context),
-                        child: const Text("Cancel"),
+                        child:  Text(localizationController.getTextValue(
+                          "BTN_CANCEL",
+                        ),),
                       ),
                       const SizedBox(width: 12),
                       ElevatedButton(
@@ -453,7 +481,9 @@ class _CategoriesViewState extends State<CategoriesView> {
                           }
                           Navigator.pop(context);
                         },
-                        child: const Text("Save", style: TextStyle(color: Colors.white)),
+                        child:  Text(localizationController.getTextValue(
+                          "BTN_SAVE",
+                        ), style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),

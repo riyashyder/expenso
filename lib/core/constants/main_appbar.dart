@@ -32,7 +32,7 @@ class _MainAppBarState extends State<MainAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    final local = getLocalizationController(context, listen: true);
+    final localizationController = getLocalizationController(context, listen: true);
 
     return Directionality(
       textDirection: AppLocalizationController.currentAppLanguage == 'ar' ? TextDirection.rtl : TextDirection.ltr,
@@ -55,7 +55,7 @@ class _MainAppBarState extends State<MainAppBar> {
                   Icon(Icons.receipt_long, color: AppThemeData.whiteColor,size: 28),
                   SizedBox(width: 8),
                   Text(
-                    "Expenso",
+                    localizationController.getTextValue("EXPENSO_APP_HEADER"),
                     style: TextStyle(
                       fontSize: 20,
                       color: AppThemeData.whiteColor,

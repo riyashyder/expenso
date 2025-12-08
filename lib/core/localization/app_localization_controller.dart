@@ -4,9 +4,725 @@ class AppLocalizationController extends ChangeNotifier {
   static String currentAppLanguage = "en";
 
   static const Map<String, dynamic> _data = {
+    "EXPENSO_APP_HEADER": {
+      "en": "Expenso",
+      "ar": "الرجاء إدخال بريد إلكتروني صالح",
+      "jp": "経費",
+    },
+
+      "WELCOME_TRACK_EXPENSES_TITLE": {
+        "en": "Track your expenses effortlessly",
+        "ar": "تتبع نفقاتك بسهولة",
+        "jp": "手軽に支出を管理しましょう"
+      },
+
+      "WELCOME_DESCRIPTION": {
+        "en": "Think of this app as your smart, reliable companion for money management. It’s always with you, ready to log expenses, remind you of bills, and celebrate your financial milestones. From beginners just starting out, to budget experts looking for detailed analysis, this app adapts to your lifestyle. It’s not just about tracking—it’s about building financial freedom, step by step.",
+        "ar": "فكر في هذا التطبيق كرفيق ذكي وموثوق لإدارة أموالك. فهو دائمًا معك، جاهز لتسجيل النفقات، وتذكيرك بالفواتير، والاحتفال بإنجازاتك المالية. من المبتدئين الذين يبدأون للتو إلى خبراء الميزانية الذين يبحثون عن تحليل مفصل، يتكيف هذا التطبيق مع أسلوب حياتك. الأمر لا يتعلق فقط بالتتبع – بل ببناء حرية مالية خطوة بخطوة.",
+        "jp": "このアプリは、あなたのお金の管理をサポートする賢くて頼れるパートナーです。いつでも支出の記録、請求のリマインド、そして財務的な達成のサポートをしてくれます。初心者から詳細な分析を求める上級者まで、あなたのライフスタイルに合わせて適応します。単なる記録ではなく、一歩ずつ経済的自由を築くためのアプリです。"
+      },
+
+      "WELCOME_GET_STARTED": {
+        "en": "Get Started",
+        "ar": "ابدأ الآن",
+        "jp": "始める"
+      },
+
+      "WELCOME_TERMS_TEXT": {
+        "en": "By continuing, you agree to our Terms of Service and Privacy Policy.",
+        "ar": "من خلال المتابعة، فإنك توافق على شروط الخدمة وسياسة الخصوصية الخاصة بنا.",
+        "jp": "続行すると、利用規約およびプライバシーポリシーに同意したものとみなされます。"
+      },
+
+
+    "EXPENSO_HEADER": {
+      "en": "Welcome back! \n\nYour financial journey continues. Log in to see your progress and stay on top of your goals.!",
+      "ar": "الرجاء إدخال بريد إلكتروني صالح",
+      "jp": "おかえりなさい！\n\nあなたのお金の旅は続きます。ログインして進捗状況を確認し、目標達成に向けて進みましょう。",
+    },
+    "EXPENSO_HEADER_2": {
+      "en": "Every big goal starts with a small step. Sign up now and take charge of your spending, one expense at a time.",
+      "ar": "الرجاء إدخال بريد إلكتروني صالح",
+      "jp": "大きな目標も小さな一歩から始まります。今すぐ登録して、一つひとつの支出を管理しましょう。",
+    },
+    "LOGIN_TAB": {
+      "en": "Login",
+      "ar": "الرجاء إدخال بريد إلكتروني صالح",
+      "jp": "ログイン",
+    },
+
+    "REPORTS_FROM": {
+      "en": "From",
+      "ar": "من",
+      "jp": "開始日"
+    },
+
+    "REPORTS_TO": {
+      "en": "To",
+      "ar": "إلى",
+      "jp": "終了日"
+    },
+
+    "TOTAL_INCOME": {
+      "en": "Total Income",
+      "ar": "إجمالي الدخل",
+      "jp": "総収入"
+    },
+
+    "TOTAL_EXPENSE": {
+      "en": "Total Expense",
+      "ar": "إجمالي المصاريف",
+      "jp": "総支出"
+    },
+
+    "THIS_MONTH_REPORT": {
+      "en": "This\nMonth",
+      "ar": "هذا\nالشهر",
+      "jp": "今月"
+    },
+
+    "WEEK": {
+      "en": "Week",
+      "ar": "أسبوع",
+      "jp": "週"
+    },
+
+    "MONTH": {
+      "en": "Month",
+      "ar": "شهر",
+      "jp": "月"
+    },
+
+    "YEAR": {
+      "en": "Year",
+      "ar": "سنة",
+      "jp": "年"
+    },
+
+    "EXPENSE": {
+      "en": "Expense",
+      "ar": "مصروف",
+      "jp": "支出"
+    },
+
+    "INCOME": {
+      "en": "Income",
+      "ar": "دخل",
+      "jp": "収入"
+    },
+
+    "EXPENSE_BREAKDOWN": {
+      "en": "Expense Breakdown",
+      "ar": "تفاصيل المصروف",
+      "jp": "支出内訳"
+    },
+
+    "INCOME_BREAKDOWN": {
+      "en": "Income Breakdown",
+      "ar": "تفاصيل الدخل",
+      "jp": "収入内訳"
+    },
+
+    "MONTHLY_INCOME_EXPENSE": {
+      "en": "Monthly Income vs Expense",
+      "ar": "الدخل مقابل المصاريف الشهرية",
+      "jp": "月間収入と支出"
+    },
+
+    "TOTAL_INCOME_AMOUNT": {
+      "en": "Total Income:",
+      "ar": "إجمالي الدخل:",
+      "jp": "総収入："
+    },
+
+    "TOTAL_EXPENSE_AMOUNT": {
+      "en": "Total Expense:",
+      "ar": "إجمالي المصروف:",
+      "jp": "総支出："
+    },
+
+    "LABEL_INCOME": {
+      "en": "Income",
+      "ar": "الدخل",
+      "jp": "収入"
+    },
+
+    "LABEL_EXPENSE": {
+      "en": "Expense",
+      "ar": "المصروف",
+      "jp": "支出"
+    },
+
+    "MONTH_JAN": { "en": "Jan", "ar": "يناير", "jp": "1月" },
+    "MONTH_FEB": { "en": "Feb", "ar": "فبراير", "jp": "2月" },
+    "MONTH_MAR": { "en": "Mar", "ar": "مارس", "jp": "3月" },
+    "MONTH_APR": { "en": "Apr", "ar": "أبريل", "jp": "4月" },
+    "MONTH_MAY": { "en": "May", "ar": "مايو", "jp": "5月" },
+    "MONTH_JUN": { "en": "Jun", "ar": "يونيو", "jp": "6月" },
+    "MONTH_JUL": { "en": "Jul", "ar": "يوليو", "jp": "7月" },
+    "MONTH_AUG": { "en": "Aug", "ar": "أغسطس", "jp": "8月" },
+    "MONTH_SEP": { "en": "Sep", "ar": "سبتمبر", "jp": "9月" },
+    "MONTH_OCT": { "en": "Oct", "ar": "أكتوبر", "jp": "10月" },
+    "MONTH_NOV": { "en": "Nov", "ar": "نوفمبر", "jp": "11月" },
+    "MONTH_DEC": { "en": "Dec", "ar": "ديسمبر", "jp": "12月" },
+
+    "TRANS_FILTER_BY_DATE": {
+      "en": "Filter by Date",
+      "ar": "تصفية حسب التاريخ",
+      "jp": "日付でフィルター"
+    },
+    "TRANS_START_DATE": {
+      "en": "Start Date",
+      "ar": "تاريخ البدء",
+      "jp": "開始日"
+    },
+    "TRANS_END_DATE": {
+      "en": "End Date",
+      "ar": "終了日",
+      "jp": "終了日"
+    },
+    "TRANS_SELECT_DATE": {
+      "en": "Select date",
+      "ar": "اختر التاريخ",
+      "jp": "日付を選択"
+    },
+    "TRANS_CLEAR": {
+      "en": "Clear",
+      "ar": "مسح",
+      "jp": "クリア"
+    },
+    "TRANS_APPLY": {
+      "en": "Apply",
+      "ar": "تطبيق",
+      "jp": "適用"
+    },
+    "TRANS_END_DATE_ERROR": {
+      "en": "End date cannot be before start date",
+      "ar": "لا يمكن أن يكون تاريخ الانتهاء قبل تاريخ البدء",
+      "jp": "終了日は開始日より前にできません"
+    },
+    "TRANS_INCOME": {
+      "en": "Income",
+      "ar": "الدخل",
+      "jp": "収入"
+    },
+    "TRANS_EXPENSES": {
+      "en": "Expenses",
+      "ar": "المصروفات",
+      "jp": "支出"
+    },
+    "TRANS_NET": {
+      "en": "Net",
+      "ar": "صافي",
+      "jp": "合計"
+    },
+    "TRANS_TAB_ALL": {
+      "en": "All",
+      "ar": "الكل",
+      "jp": "すべて"
+    },
+    "TRANS_TAB_INCOME": {
+      "en": "Income",
+      "ar": "الدخل",
+      "jp": "収入"
+    },
+    "TRANS_TAB_EXPENSES": {
+      "en": "Expenses",
+      "ar": "المصروفات",
+      "jp": "支出"
+    },
+    "TRANS_FILTER_TRANSACTIONS": {
+      "en": "Filter Transactions",
+      "ar": "تصفية المعاملات",
+      "jp": "取引をフィルター"
+    },
+    "TRANS_ADD_TRANSACTION": {
+      "en": "Add Transaction",
+      "ar": "إضافة معاملة",
+      "jp": "取引を追加"
+    },
+    "TRANS_AMOUNT": {
+      "en": "Amount",
+      "ar": "المبلغ",
+      "jp": "金額"
+    },
+    "TRANS_ENTER_AMOUNT": {
+      "en": "Enter amount",
+      "ar": "أدخل المبلغ",
+      "jp": "金額を入力してください"
+    },
+    "TRANS_ENTER_VALID_NUMBER": {
+      "en": "Enter valid number",
+      "ar": "أدخل رقمًا صالحًا",
+      "jp": "有効な数字を入力してください"
+    },
+    "TRANS_CATEGORY": {
+      "en": "Category",
+      "ar": "الفئة",
+      "jp": "カテゴリー"
+    },
+    "TRANS_ENTER_CATEGORY": {
+      "en": "Enter category",
+      "ar": "أدخل الفئة",
+      "jp": "カテゴリーを入力してください"
+    },
+    "TRANS_TRANSACTION_TYPE": {
+      "en": "Transaction Type",
+      "ar": "نوع المعاملة",
+      "jp": "取引タイプ"
+    },
+    "TRANS_TYPE_INCOME": {
+      "en": "Income",
+      "ar": "دخل",
+      "jp": "収入"
+    },
+    "TRANS_TYPE_EXPENSE": {
+      "en": "Expense",
+      "ar": "مصروف",
+      "jp": "支出"
+    },
+    "TRANS_DATE": {
+      "en": "Date",
+      "ar": "التاريخ",
+      "jp": "日付"
+    },
+    "TRANS_CREATE_TRANSACTION": {
+      "en": "Create Transaction",
+      "ar": "إنشاء معاملة",
+      "jp": "取引を作成"
+    },
+    "TRANS_SUCCESS_TRANSACTION_CREATED": {
+      "en": "Transaction created successfully!",
+      "ar": "تم إنشاء المعاملة بنجاح!",
+      "jp": "取引が正常に作成されました！"
+    },
+
+    "CATEGORIES": {
+      "en": "Categories",
+      "ar": "الفئات",
+      "jp": "カテゴリー"
+    },
+    "NEW_CATEGORY": {
+      "en": "New",
+      "ar": "جديد",
+      "jp": "新規"
+    },
+    "EDIT_CATEGORY": {
+      "en": "Edit Category",
+      "ar": "تعديل الفئة",
+      "jp": "カテゴリを編集"
+    },
+    "DELETE_CATEGORY": {
+      "en": "Delete Category?",
+      "ar": "حذف الفئة؟",
+      "jp": "カテゴリを削除しますか？"
+    },
+    "DELETE_WARNING": {
+      "en": "This action cannot be undone.",
+      "ar": "لا يمكن التراجع عن هذا الإجراء.",
+      "jp": "この操作は元に戻せません。"
+    },
+    "BTN_CANCEL": {
+      "en": "Cancel",
+      "ar": "إلغاء",
+      "jp": "キャンセル"
+    },
+    "BTN_DELETE": {
+      "en": "Delete",
+      "ar": "حذف",
+      "jp": "削除"
+    },
+    "BTN_SAVE": {
+      "en": "Save",
+      "ar": "حفظ",
+      "jp": "保存"
+    },
+    "ENTER_CATEGORY_NAME": {
+      "en": "Enter category name",
+      "ar": "أدخل اسم الفئة",
+      "jp": "カテゴリ名を入力"
+    },
+    "ENTER_DESCRIPTION": {
+      "en": "Enter description",
+      "ar": "أدخل الوصف",
+      "jp": "説明を入力"
+    },
+    "CATEGORY_CREATED": {
+      "en": "Category created successfully!",
+      "ar": "تم إنشاء الفئة بنجاح!",
+      "jp": "カテゴリが正常に作成されました！"
+    },
+    "CATEGORY_UPDATED": {
+      "en": "Category updated successfully!",
+      "ar": "تم تحديث الفئة بنجاح!",
+      "jp": "カテゴリが正常に更新されました！"
+    },
+    "CATEGORY_DELETED": {
+      "en": "Category deleted successfully!",
+      "ar": "تم حذف الفئة بنجاح!",
+      "jp": "カテゴリが正常に削除されました！"
+    },
+
+    "SETTINGS_SCREEN": {
+      "en": "Settings",
+      "ar": "الإعدادات",
+      "jp": "設定"
+    },
+
+    "PREFERENCES": {
+      "en": "Preferences",
+      "ar": "التفضيلات",
+      "jp": "設定"
+    },
+
+    "ACCOUNT": {
+      "en": "Account",
+      "ar": "الحساب",
+      "jp": "アカウント"
+    },
+
+    "PRIVACY": {
+      "en": "Privacy",
+      "ar": "الخصوصية",
+      "jp": "プライバシー"
+    },
+
+    "CONFIRM_LOGOUT": {
+      "en": "Confirm Logout",
+      "ar": "تأكيد تسجيل الخروج",
+      "jp": "ログアウトの確認"
+    },
+
+    "LOGOUT_MESSAGE": {
+      "en": "Are you sure you want to log out?",
+      "ar": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+      "jp": "ログアウトしてもよろしいですか？"
+    },
+
+    "BTN_CANCEL_SETTINGS": {
+      "en": "Cancel",
+      "ar": "إلغاء",
+      "jp": "キャンセル"
+    },
+
+    "BTN_LOGOUT_SETTING": {
+      "en": "Logout",
+      "ar": "تسجيل الخروج",
+      "jp": "ログアウト"
+    },
+
+
+    "PRE_THEME": {
+      "en": "Theme",
+      "ar": "السمة",
+      "jp": "テーマ"
+    },
+    "PRE_THEME_SUBTITLE": {
+      "en": "Customize the app’s appearance",
+      "ar": "تخصيص مظهر التطبيق",
+      "jp": "アプリの外観をカスタマイズ"
+    },
+    "PRE_THEME_TRAILING": {
+      "en": "System",
+      "ar": "النظام",
+      "jp": "システム"
+    },
+
+    "PRE_CURRENCY": {
+      "en": "Currency",
+      "ar": "العملة",
+      "jp": "通貨"
+    },
+    "PRE_CURRENCY_SUBTITLE": {
+      "en": "Set your preferred currency",
+      "ar": "عيّن العملة المفضلة لديك",
+      "jp": "希望の通貨を設定"
+    },
+    "PRE_CURRENCY_TRAILING": {
+      "en": "USD",
+      "ar": "دولار أمريكي",
+      "jp": "USD"
+    },
+
+    "PRE_LANGUAGE": {
+      "en": "Language",
+      "ar": "اللغة",
+      "jp": "言語"
+    },
+    "PRE_LANGUAGE_SUBTITLE": {
+      "en": "Choose your preferred language",
+      "ar": "اختر لغتك المفضلة",
+      "jp": "言語を選択"
+    },
+    "PRE_LANGUAGE_TRAILING": {
+      "en": "English",
+      "ar": "الإنجليزية",
+      "jp": "英語"
+    },
+
+    "PRE_PROFILE": {
+      "en": "Profile",
+      "ar": "الملف الشخصي",
+      "jp": "プロフィール"
+    },
+
+    "PRE_SECURITY": {
+      "en": "Security",
+      "ar": "الأمان",
+      "jp": "セキュリティ"
+    },
+
+    "PRE_NOTIFICATIONS": {
+      "en": "Notifications",
+      "ar": "الإشعارات",
+      "jp": "通知"
+    },
+
+    "PRE_LOGOUT": {
+      "en": "Logout",
+      "ar": "تسجيل الخروج",
+      "jp": "ログアウト"
+    },
+
+    "PRE_TERMS_OF_SERVICE": {
+      "en": "Terms of Service",
+      "ar": "شروط الخدمة",
+      "jp": "利用規約"
+    },
+    "PRE_PRIVACY_POLICY": {
+      "en": "Privacy Policy",
+      "ar": "سياسة الخصوصية",
+      "jp": "プライバシーポリシー"
+    },
+    "PRE_CONTACT_US": {
+      "en": "Contact Us",
+      "ar": "اتصل بنا",
+      "jp": "お問い合わせ"
+    },
+
+    "EXPORT_DATA_TITLE": {
+      "en": "Export Data",
+      "ar": "تصدير البيانات",
+      "jp": "データをエクスポート",
+    },
+
+    "DATE_RANGE_EXPORT": {
+      "en": "Date Range",
+      "ar": "نطاق التاريخ",
+      "jp": "日付範囲",
+    },
+
+    "FROM_DATE": {
+      "en": "From",
+      "ar": "من",
+      "jp": "開始日",
+    },
+
+    "TO_DATE": {
+      "en": "To",
+      "ar": "إلى",
+      "jp": "終了日",
+    },
+
+    "FILE_FORMAT": {
+      "en": "File Format",
+      "ar": "تنسيق الملف",
+      "jp": "ファイル形式",
+    },
+
+    "CSV": {
+      "en": "CSV",
+      "ar": "CSV",
+      "jp": "CSV",
+    },
+
+    "PDF": {
+      "en": "PDF",
+      "ar": "PDF",
+      "jp": "PDF",
+    },
+
+    "EXPORT_BTN": {
+      "en": "Export",
+      "ar": "تصدير",
+      "jp": "エクスポート",
+    },
+
+    "PRE_SETTINGS_THEME": {
+      "en": "Theme",
+      "ar": "السمة",
+      "jp": "テーマ",
+    },
+
+    "PRE_SETTINGS_THEME_SUB": {
+      "en": "Customize the app’s appearance",
+      "ar": "خصص مظهر التطبيق",
+      "jp": "アプリの外観をカスタマイズ",
+    },
+
+    "PRE_SETTINGS_THEME_TRAILING": {
+      "en": "System",
+      "ar": "النظام",
+      "jp": "システム",
+    },
+
+    "PRE_SETTINGS_CURRENCY": {
+      "en": "Currency",
+      "ar": "العملة",
+      "jp": "通貨",
+    },
+
+    "PRE_SETTINGS_CURRENCY_SUB": {
+      "en": "Set your preferred currency",
+      "ar": "حدد عملتك المفضلة",
+      "jp": "希望の通貨を設定",
+    },
+
+    "PRE_SETTINGS_CURRENCY_TRAILING": {
+      "en": "USD",
+      "ar": "دولار",
+      "jp": "USD",
+    },
+
+    "PRE_SETTINGS_LANGUAGE": {
+      "en": "Language",
+      "ar": "اللغة",
+      "jp": "言語",
+    },
+
+    "PRE_SETTINGS_LANGUAGE_SUB": {
+      "en": "Choose your preferred language",
+      "ar": "اختر لغتك المفضلة",
+      "jp": "希望の言語を選択",
+    },
+
+    "PRE_SETTINGS_LANGUAGE_TRAILING": {
+      "en": "English",
+      "ar": "الإنجليزية",
+      "jp": "英語",
+    },
+    "PRE_SETTINGS_PROFILE": {
+      "en": "Profile",
+      "ar": "الملف الشخصي",
+      "jp": "プロフィール",
+    },
+
+    "PRE_SETTINGS_SECURITY": {
+      "en": "Security",
+      "ar": "الأمان",
+      "jp": "セキュリティ",
+    },
+
+    "PRE_SETTINGS_NOTIFICATIONS": {
+      "en": "Notifications",
+      "ar": "الإشعارات",
+      "jp": "通知",
+    },
+
+    "PRE_SETTINGS_LOGOUT": {
+      "en": "Logout",
+      "ar": "تسجيل الخروج",
+      "jp": "ログアウト",
+    },
+    "PRE_SETTINGS_TERMS": {
+      "en": "Terms of Service",
+      "ar": "شروط الخدمة",
+      "jp": "利用規約",
+    },
+
+    "PRE_SETTINGS_PRIVACY_POLICY": {
+      "en": "Privacy Policy",
+      "ar": "سياسة الخصوصية",
+      "jp": "プライバシーポリシー",
+    },
+
+    "PRE_SETTINGS_CONTACT_US": {
+      "en": "Contact Us",
+      "ar": "اتصل بنا",
+      "jp": "お問い合わせ",
+    },
+
+
+    "SELECT_DATE": {
+      "en": "Select Date",
+      "ar": "اختر التاريخ",
+      "jp": "日付を選択",
+    },
+
+
+    "LOGOUT_SUCCESS": {
+      "en": "User logged out successfully",
+      "ar": "تم تسجيل خروج المستخدم بنجاح",
+      "jp": "ログアウトしました"
+    },
+
+    "SWITCH_NOTIFICATIONS": {
+      "en": "Notifications",
+      "ar": "الإشعارات",
+      "jp": "通知"
+    },
+
+    "SETTINGS_LANGUAGE": {
+      "en": "Language",
+      "ar": "اللغة",
+      "jp": "言語"
+    },
+
+    "SETTINGS_THEME": {
+      "en": "Theme",
+      "ar": "المظهر",
+      "jp": "テーマ"
+    },
+
+    "SETTINGS_ACCOUNT_SECURITY": {
+      "en": "Account Security",
+      "ar": "أمان الحساب",
+      "jp": "アカウントのセキュリティ"
+    },
+
+    "SETTINGS_PRIVACY_POLICY": {
+      "en": "Privacy Policy",
+      "ar": "سياسة الخصوصية",
+      "jp": "プライバシーポリシー"
+    },
+
+    "SETTINGS_TERMS": {
+      "en": "Terms & Conditions",
+      "ar": "الشروط والأحكام",
+      "jp": "利用規約"
+    },
+
+    "REGISTER_NAME": {
+      "en": "First Name",
+      "ar": "الاسم الأول",
+      "jp": "名"
+    },
+    "REGISTER_FIRST_NAME": {
+      "en": "First name is required",
+      "ar": "الاسم الأول مطلوب",
+      "jp": "名は必須です"
+    },
+    "REGISTER_LAST_NAME": {
+      "en": "First Name",
+    },
+    "REGISTER_EMAIL_ID": {
+      "en": "First Name",
+    },
+    "REGISTER_PASSWORD": {
+      "en": "First Name",
+    },
+    "REGISTER_CONFIRM_PASSWORD": {
+      "en": "First Name",
+    },
+    "REGISTER_TAB": {
+      "en": "Register",
+      "ar": "الرجاء إدخال بريد إلكتروني صالح",
+      "jp": "登録する",
+    },
     "LOGIN_EMAIL_ERROR": {
       "en": "Please enter a valid email",
       "ar": "الرجاء إدخال بريد إلكتروني صالح",
+      "jp": "有効なメールアドレスを入力してください",
     },
     "header": {"en": "Welcome", "ar": "مرحباً"},
     "welcomeText": {
@@ -25,12 +741,20 @@ class AppLocalizationController extends ChangeNotifier {
       "en": "Join us! Play and Win to Seize the Reward!!",
       "ar": "انضم إلينا! العب واربح لتحصل على الجائزة!!",
     },
-    "LOGIN_EMAIL": {"en": "E-mail ID", "ar": "معرف البريد الإلكتروني"},
-    "LOGIN_PASSWORD": {"en": "Password", "ar": "كلمة المرور"},
+    "LOGIN_EMAIL": {"en": "E-mail ID", "ar": "معرف البريد الإلكتروني","jp": "メールID",},
+    "LOGIN_PASSWORD": {"en": "Password", "ar": "كلمة المرور","jp":"パスワード"},
     "LOGIN_REMEMBER": {"en": "Remember me", "ar": "تذكرنى"},
-    "LOGIN_FORGOT_PASS": {"en": "Forgot Password?", "ar": "هل نسيت كلمة السر؟"},
-    "LOGIN_BUTTON_LOADING": {"en": "Loading...", "ar": "تحميل..."},
-    "LOGIN_BUTTON": {"en": "Login", "ar": "تسجيل الدخول"},
+    "LOGIN_FORGOT_PASS": {"en": "Forgot Password?", "ar": "هل نسيت كلمة السر؟","jp":"パスワードをお忘れですか？"},
+    "LOGIN_BUTTON_LOADING": {
+      "en": "Loading...",
+      "ar": "تحميل...",
+      "jp": "読み込み中..."
+    },
+    "LOGIN_BUTTON": {
+      "en": "Login",
+      "ar": "تسجيل الدخول",
+      "jp": "ログイン"
+    },
     "HOME": {"en": "Home", "ar": "الصفحة الرئيسية"},
     "RAFFLE": {"en": "Raffle", "ar": "السحب"},
     "MENU": {"en": "Menu", "ar": "القائمة"},
@@ -69,6 +793,7 @@ class AppLocalizationController extends ChangeNotifier {
     "PASSWORD_NOT_MATCH": {
       "en": "Passwords do not match",
       "ar": "كلمات المرور غير متطابقة",
+      "jp": "パスワードが一致しません"
     },
     "FORGOT_PASSWORD_ERROR": {
       "en": "Please enter a valid email",
@@ -103,6 +828,7 @@ class AppLocalizationController extends ChangeNotifier {
     "CONFIRM_PASSWORD_LABEL": {
       "en": "Confirm Password",
       "ar": "تأكيد كلمة المرور",
+      "jp": "パスワードを確認"
     },
     "CONFIRM_PASSWORD_SUBMITTING": {"en": "Submitting", "ar": "تقديم"},
     "CONFIRM_PASSWORD_SUBMIT": {"en": "Submit", "ar": "يُقدِّم"},
@@ -510,6 +1236,7 @@ class AppLocalizationController extends ChangeNotifier {
     "INVALID_EMAIL": {
       "en": "Enter a valid email",
       "ar": "أدخل بريدًا إلكترونيًا صالحًا",
+      "jp": "有効なメールアドレスを入力してください"
     },
     "MOBILE_NUMBER_REQUIRED": {
       "en": "Mobile number is required",
@@ -705,6 +1432,7 @@ class AppLocalizationController extends ChangeNotifier {
     "EMAIL_REQUIRED": {
       "en": "Please enter your email",
       "ar": "يرجى إدخال بريدك الإلكتروني",
+      "jp": "メールアドレスを入力してください"
     },
     "EMAIL_INVALID": {
       "en": "Please enter a valid email address",
@@ -769,6 +1497,12 @@ class AppLocalizationController extends ChangeNotifier {
     "LOGIN_PASSWORD_ERROR": {
       "en": "Password cannot be empty",
       "ar": "لا يمكن أن تكون كلمة المرور فارغة",
+      "jp": "パスワードを空にすることはできません",
+    },
+    "LOGIN_PASSWORD_ERROR_1": {
+      "en": "Password must be at least 8 characters,\ninclude 1 uppercase letter, 1 number & 1 special character.",
+      "ar": "يجب أن تكون كلمة المرور 8 أحرف على الأقل، وتشمل حرفًا كبيرًا واحدًا، ورقمًا واحدًا، وحرفًا خاصًا واحدًا.",
+      "jp": "パスワードは8文字以上で、1つの大文字、1つの数字、1つの特殊文字を含める必要があります。"
     },
     "NO_ALERTS_YET": {"en": '" No Alerts yet "', "ar": 'لا توجد تنبيهات بعد'},
     "ALERTS": {"en": 'Alerts', "ar": 'التنبيهات'},
@@ -916,12 +1650,21 @@ class AppLocalizationController extends ChangeNotifier {
       "en": "You need to verify your mail ID to delete your account.",
       "ar": "تحتاج إلى التحقق من بريدك الإلكتروني لحذف حسابك.",
     },
-    "LAST_NAME": {"en": "Last Name", "ar": "الاسم الأخير"},
+    "LAST_NAME": {
+      "en": "Last Name",
+      "ar": "الاسم الأخير",
+      "jp": "姓"
+    },
     "LAST_NAME_REQUIRED": {
       "en": "Last Name is Required",
       "ar": "الاسم الأخير مطلوب",
+      "jp": "姓は必須です"
     },
-    "MIN_3_CHAR": {"en": "Min 3 Char", "ar": "الحد الأدنى 3 أحرف"},
+    "MIN_3_CHAR": {
+      "en": "Min 3 Char",
+      "ar": "الحد الأدنى 3 أحرف",
+      "jp": "最小3文字"
+    },
     "FULL_NAME": {"en": "Full Name", "ar": "الاسم الكامل"},
     "FULL_NAME_REQUIRED": {
       "en": "Full Name is Required",
@@ -930,6 +1673,7 @@ class AppLocalizationController extends ChangeNotifier {
     "CONFIRM_PASSWORD": {
       "en": "Please confirm your password",
       "ar": "يرجى تأكيد كلمة المرور",
+      "jp": "パスワードを確認してください"
     },
     "EMIRATES_NUMBER": {"en": "Emirates Number", "ar": "رقم الهوية الإماراتية"},
     "PASSPORT_NUMBER": {"en": "Passport Number", "ar": "رقم جواز السفر"},
@@ -945,7 +1689,11 @@ class AppLocalizationController extends ChangeNotifier {
       "en": "Invalid Passport Number format",
       "ar": "تنسيق رقم جواز السفر غير صالح",
     },
-    "REGISTER": {"en": "REGISTER", "ar": "تسجيل"},
+    "REGISTER": {
+      "en": "REGISTER",
+      "ar": "تسجيل",
+      "jp": "登録"
+    },
     "MEET_THE_WINNERS": {"en": "Meet the Winners", "ar": "قابل الفائزين"},
     "YOUR_NEXT_WINNING_MOMENT": {
       "en": "Your Next Winning Moment Could Be Here!",

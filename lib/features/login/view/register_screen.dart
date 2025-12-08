@@ -28,7 +28,7 @@ import '../controller/login_controller.dart';
 
   class _RegisterFormState extends State<RegisterForm> {
     final formKey = GlobalKey<FormState>();
-    final confirmPasswordKey = GlobalKey<FormFieldState>(); // ✅ add this
+    final confirmPasswordKey = GlobalKey<FormFieldState>(); //  add this
 
     @override
     void initState() {
@@ -45,7 +45,7 @@ import '../controller/login_controller.dart';
         );
 
         registerController.passwordController.addListener(() {
-          confirmPasswordKey.currentState?.validate(); // ✅ re-run confirm validator
+          confirmPasswordKey.currentState?.validate(); //  re-run confirm validator
         });
 
         registerController.passwordController.addListener(() {
@@ -94,7 +94,9 @@ import '../controller/login_controller.dart';
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextField(
-                      label: "First Name",
+                      label: localizationController.getTextValue(
+                        "REGISTER_NAME",
+                      ),
                       controller: registerController.fullNameController,
                       enabled: !registerController.isLoading,
                       svgname: 'assets/svg/svgcopy/name.svg',
@@ -104,7 +106,9 @@ import '../controller/login_controller.dart';
                       validator: (value) {
                         final text = value?.trim() ?? "";
                         if (text.isEmpty) {
-                          return "First name is required";
+                          return localizationController.getTextValue(
+                            "REGISTER_FIRST_NAME",
+                          );
                         }
                         if (text.length < 3) {
                           return localizationController.getTextValue(
@@ -198,7 +202,9 @@ import '../controller/login_controller.dart';
                         final password = value?.trim() ?? "";
 
                         if (password.isEmpty) {
-                          return 'Password not to be empty';
+                          return localizationController.getTextValue(
+                            "PASSWORD_ERROR",
+                          );
                         }
 
                         final regex = RegExp(
@@ -206,10 +212,12 @@ import '../controller/login_controller.dart';
                         );
 
                         if (!regex.hasMatch(password)) {
-                          return 'Password must be at least 8 characters,\ninclude 1 uppercase letter, 1 number & 1 special character.';
+                          return localizationController.getTextValue(
+                            "LOGIN_PASSWORD_ERROR_1",
+                          ); ;
                         }
 
-                        return null; // ✅ only password rules here
+                        return null; // only password rules here
                       },
                     ),
 
@@ -393,7 +401,7 @@ import '../controller/login_controller.dart';
                                   MaterialPageRoute(
                                     builder: (context) => ChangeNotifierProvider<OtpTimerController>(
                                       create: (_) => OtpTimerController(
-                                        registerController.otpValidityTimeInSeconds ?? 180, // ✅ use controller value
+                                        registerController.otpValidityTimeInSeconds ?? 180, //  use controller value
                                       ),
                                       child: ForgotPassCode(
                                         email: registerController.emailController.text,

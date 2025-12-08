@@ -62,7 +62,6 @@ class _WelcomeViewState extends State<WelcomeView> {
 
 
 
-
     return Scaffold(
       backgroundColor: Color(0xffffffff),
       body: Center(
@@ -80,8 +79,10 @@ class _WelcomeViewState extends State<WelcomeView> {
             ),
             const SizedBox(height: 20),
 
-            const Text(
-              "Track your expenses effortlessly",
+             Text(
+                localizationController.getTextValue(
+                  "WELCOME_TRACK_EXPENSES_TITLE",
+                ),
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 18,
@@ -93,8 +94,10 @@ class _WelcomeViewState extends State<WelcomeView> {
 
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: const Text(
-                "Think of this app as your smart, reliable companion for money management. It’s always with you, ready to log expenses, remind you of bills, and celebrate your financial milestones. From beginners just starting out, to budget experts looking for detailed analysis, this app adapts to your lifestyle. It’s not just about tracking—it’s about building financial freedom, step by step.",
+              child:  Text(
+                localizationController.getTextValue(
+                  "WELCOME_DESCRIPTION",
+                ),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black54,fontSize: 14),
               ),
@@ -127,7 +130,9 @@ class _WelcomeViewState extends State<WelcomeView> {
                 children: [
                   Expanded(
                     child: AppElevatedButton(
-                      label: 'Get Started',
+                      label: localizationController.getTextValue(
+                "WELCOME_GET_STARTED",
+              ),
                       textStyle: AppthemeData.buttonStyle,
                       onPressed: (){
                         Navigator.of(context).push(
@@ -148,8 +153,10 @@ class _WelcomeViewState extends State<WelcomeView> {
 
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: const Text(
-                "By continuing, you agree to our Terms of Service and Privacy Policy.",
+              child:  Text(
+                localizationController.getTextValue(
+                  "WELCOME_TERMS_TEXT",
+                ),
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 11, color: Colors.black45),
               ),

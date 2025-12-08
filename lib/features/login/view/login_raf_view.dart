@@ -123,7 +123,7 @@
                                   Icon(Icons.receipt_long, color: AppThemeData.whiteColor,size: 28),
                                   SizedBox(width: 8),
                                   Text(
-                                    "Expenso",
+                                    localizationController.getTextValue("EXPENSO_APP_HEADER"),
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: AppThemeData.whiteColor,
@@ -139,7 +139,7 @@
                             Padding(
                               padding: const EdgeInsets.only(left: 15,top: 10),
                               child: Text(
-                                selectedTab==0? "Welcome back! \n\nYour financial journey continues. Log in to see your progress and stay on top of your goals.!" : "Every big goal starts with a small step. Sign up now and take charge of your spending, one expense at a time.",
+                                selectedTab==0? localizationController.getTextValue("EXPENSO_HEADER") : localizationController.getTextValue("EXPENSO_HEADER_2"),
                                 style: AppthemeData.bigheadingStyle.copyWith(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -260,8 +260,8 @@
                                 //     selectedTab = index;
                                 //   });
                                 // },
-                                leftTabText: "Login",
-                                rightTabText: 'Register',
+                                leftTabText: localizationController.getTextValue("LOGIN_TAB"),
+                                rightTabText: localizationController.getTextValue("REGISTER_TAB"),
                               ),
                               if (selectedTab == 0)
                                 LoginForm(

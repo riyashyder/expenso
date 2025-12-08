@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utils/devices/get_localization_provider.dart';
 import '../controller/transaction_controller.dart';
 import '../model/transaction_item.dart';
 
@@ -194,6 +195,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
 
   Widget _buildSummaryCard(TransactionsController controller) {
+    final localizationController = getLocalizationController(
+      context,
+      listen: false,
+    );
+
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -207,9 +213,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _summaryTile("Income", controller.totalIncome, Colors.green),
-              _summaryTile("Expenses", controller.totalExpense, Colors.red),
-              _summaryTile("Net", controller.netTotal, Colors.blue),
+              _summaryTile(localizationController.getTextValue(
+                "TRANS_INCOME",
+              ), controller.totalIncome, Colors.green),
+              _summaryTile(localizationController.getTextValue(
+                "TRANS_EXPENSES",
+              ), controller.totalExpense, Colors.red),
+              _summaryTile(localizationController.getTextValue(
+                "TRANS_NET",
+              ), controller.netTotal, Colors.blue),
             ],
           ),
         ],
@@ -232,12 +244,23 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
 
   Widget _buildTabs(TransactionsController controller) {
+    final localizationController = getLocalizationController(
+      context,
+      listen: false,
+    );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildTab("All", controller),
-        _buildTab("Income", controller),
-        _buildTab("Expenses", controller),
+        _buildTab(localizationController.getTextValue(
+          "TRANS_TAB_ALL",
+        ), controller),
+        _buildTab(localizationController.getTextValue(
+          "TRANS_TAB_INCOME",
+        ), controller),
+        _buildTab(localizationController.getTextValue(
+          "TRANS_TAB_EXPENSES",
+        ), controller),
       ],
     );
   }
@@ -285,6 +308,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   void _openFilterBottomSheet(BuildContext context) {
     final controller = context.read<TransactionsController>();
+    final localizationController = getLocalizationController(
+      context,
+      listen: false,
+    );
+
 
     showModalBottomSheet(
       context: context,
@@ -321,8 +349,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       ),
                     ),
                   ),
-                  const Text(
-                    "Filter Transactions",
+                   Text(
+                    localizationController.getTextValue(
+                      "TRANS_FILTER_TRANSACTIONS",
+                    ),
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
@@ -341,13 +371,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       }
                     },
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: "Start Date",
+                      decoration:  InputDecoration(
+                        labelText: "${ localizationController.getTextValue(
+                        "TRANS_START_DATE",
+            )}",
                         border: OutlineInputBorder(),
                       ),
                       child: Text(
                         tempFrom == null
-                            ? "Select date"
+                            ? "${localizationController.getTextValue(
+                          "TRANS_SELECT_DATE",
+                        )}"
                             : tempFrom!.toIso8601String().split('T').first,
                         style: TextStyle(
                           color: tempFrom == null ? Colors.grey : Colors.black87,
@@ -371,13 +405,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       }
                     },
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: "End Date",
+                      decoration:  InputDecoration(
+                        labelText: "${localizationController.getTextValue(
+                          "TRANS_END_DATE",
+                        )}",
                         border: OutlineInputBorder(),
                       ),
                       child: Text(
                         tempTo == null
-                            ? "Select date"
+                            ?  "${localizationController.getTextValue(
+                          "TRANS_SELECT_DATE",
+                        )}"
                             : tempTo!.toIso8601String().split('T').first,
                         style: TextStyle(
                           color: tempTo == null ? Colors.grey : Colors.black87,
@@ -419,8 +457,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          "Clear",
+                        child:  Text(
+            "${localizationController.getTextValue(
+            "TRANS_CLEAR",
+            )}",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -432,8 +472,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                             ? () {
                           if (tempTo!.isBefore(tempFrom!)) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("End date cannot be before start date"),
+                               SnackBar(
+                                content: Text(localizationController.getTextValue(
+                                  "TRANS_END_DATE_ERROR",
+                                )),
                               ),
                             );
                             return;
@@ -456,8 +498,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          "Apply",
+                        child:  Text(
+                          localizationController.getTextValue(
+                            "TRANS_APPLY",
+                          ),
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -516,6 +560,11 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
   final TextEditingController _categoryController = TextEditingController();
   DateTime? _selectedDate;
   String _selectedType = 'income';
+  late final localizationController = getLocalizationController(
+    context,
+    listen: false,
+  );
+
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -564,8 +613,10 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
                   ),
                 ),
               ),
-              const Text(
-                "Add Transaction",
+               Text(
+                   "${localizationController.getTextValue(
+                     "TRANS_ADD_TRANSACTION",
+                   )}",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -574,13 +625,19 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: "Amount",
+                decoration:  InputDecoration(
+                  labelText: "${localizationController.getTextValue(
+                    "TRANS_AMOUNT",
+                  )}",
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return 'Enter amount';
-                  if (double.tryParse(value) == null) return 'Enter valid number';
+                  if (value == null || value.isEmpty) return "${localizationController.getTextValue(
+                    "TRANS_ENTER_AMOUNT",
+                  )}";
+                  if (double.tryParse(value) == null) return "${localizationController.getTextValue(
+                    "TRANS_ENTER_VALID_NUMBER",
+                  )}";
                   return null;
                 },
               ),
@@ -589,25 +646,35 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
               // Category field
               TextFormField(
                 controller: _categoryController,
-                decoration: const InputDecoration(
-                  labelText: "Category",
+                decoration:  InputDecoration(
+                  labelText: "${localizationController.getTextValue(
+                    "TRANS_CATEGORY",
+                  )}",
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
-                value == null || value.isEmpty ? 'Enter category' : null,
+                value == null || value.isEmpty ? "${localizationController.getTextValue(
+                  "TRANS_ENTER_CATEGORY",
+                )}" : null,
               ),
               const SizedBox(height: 16),
 
               // Transaction Type dropdown
               DropdownButtonFormField<String>(
                 value: _selectedType,
-                items: const [
-                  DropdownMenuItem(value: "income", child: Text("Income")),
-                  DropdownMenuItem(value: "expense", child: Text("Expense")),
+                items:  [
+                  DropdownMenuItem(value: "income", child: Text("${localizationController.getTextValue(
+                    "TRANS_TYPE_INCOME",
+                  )}")),
+                  DropdownMenuItem(value: "expense", child: Text("${localizationController.getTextValue(
+                    "TRANS_TYPE_EXPENSE",
+                  )}")),
                 ],
                 onChanged: (value) => setState(() => _selectedType = value!),
-                decoration: const InputDecoration(
-                  labelText: "Transaction Type",
+                decoration:  InputDecoration(
+                  labelText: "${localizationController.getTextValue(
+                    "TRANS_TRANSACTION_TYPE",
+                  )}",
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -627,13 +694,17 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
                   }
                 },
                 child: InputDecorator(
-                  decoration: const InputDecoration(
-                    labelText: "Date",
+                  decoration:  InputDecoration(
+                    labelText: "${localizationController.getTextValue(
+                  "TRANS_DATE",
+                  )}",
                     border: OutlineInputBorder(),
                   ),
                   child: Text(
                     _selectedDate == null
-                        ? "Select date"
+                        ? "${localizationController.getTextValue(
+                      "TRANS_SELECT_DATE",
+                    )}"
                         : _selectedDate!.toIso8601String().split('T').first,
                     style: TextStyle(
                         color: _selectedDate == null
@@ -657,8 +728,10 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
                       borderRadius: BorderRadius.circular(12), // Rounded rectangle
                     ),
                   ),
-                  child: const Text(
-                    "Create Transaction",
+                  child:  Text(
+                    "${localizationController.getTextValue(
+                      "TRANS_CREATE_TRANSACTION",
+                    )}",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
