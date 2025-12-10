@@ -1,4 +1,5 @@
 import 'package:expense_tracker/features/login/view/login_view.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,32 @@ class _WelcomeViewState extends State<WelcomeView> {
   void initState() {
     super.initState();
     _checkAccessToken();
+    setupFCM();
+  }
+
+  void setupFCM() async {
+    final FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Request permissions
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // Get token
+    String? token = await FirebaseMessaging.instance.getToken();
+    print("FCM Token: $token");
+
+    // Foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Foreground message: ${message.notification?.title}");
+    });
+
+    // When app is opened by tapping notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("Notification opened: ${message.data}");
+    });
   }
 
   Future<void> _checkAccessToken() async {

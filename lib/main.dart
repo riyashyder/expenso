@@ -1,6 +1,8 @@
 
 import 'package:expense_tracker/routes/app_routes.dart';
 import 'package:expense_tracker/shared/connectivity_provider/connectivity_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -25,9 +27,24 @@ import 'features/report/controller/report_controller.dart';
 import 'features/settings/controller/settings_controller.dart';
 import 'features/transactions/controller/transaction_api_controller.dart';
 import 'features/transactions/controller/transaction_controller.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
+void main() async {
   // runApp(const MyApp());
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+
   runApp(
     MultiProvider(
       providers: [
@@ -66,6 +83,7 @@ void main() {
       child: const MyApp(),
     ),
   );
+
 }
 
 class MyApp extends StatelessWidget {

@@ -19,6 +19,8 @@
     late TextEditingController languageCtrl;
     late TextEditingController currencyCtrl;
     final SettingsController settingsController = SettingsController();
+    int selectedAvatar = 1;
+
 
     @override
     void initState() {
@@ -42,7 +44,57 @@
       timeZoneCtrl = TextEditingController(text: u.timeZone);
       languageCtrl = TextEditingController(text: u.preferredLanguage);
       currencyCtrl = TextEditingController(text: "${u.currencyCode} (${u.currencySymbol})");
+      selectedAvatar = u.avatar;
     }
+
+    Future<void> showAvatarPicker(BuildContext context) async {
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Choose Avatar"),
+            content: SizedBox(
+              height: 260,
+              width: double.maxFinite,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                itemCount: 8,
+                itemBuilder: (context, index) {
+                  final avatarNo = index + 1;
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() => selectedAvatar = avatarNo);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: selectedAvatar == avatarNo
+                              ? Colors.blue
+                              : Colors.transparent,
+                          width: 3,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child: CircleAvatar(
+                        backgroundImage:
+                        AssetImage("assets/avatars/a$avatarNo.png"),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      );
+    }
+
 
     // @override
     // void initState() {
@@ -219,14 +271,23 @@
         ),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 42,
-              backgroundColor: Colors.white,
-              child: Text(
-                user.firstName[0],
-                style: const TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
+            GestureDetector(
+              onTap: () => showAvatarPicker(context),
+              child: CircleAvatar(
+                radius: 42,
+                backgroundColor: Colors.white,
+                backgroundImage:
+                AssetImage("assets/avatars/a$selectedAvatar.jpg")
               ),
             ),
+            // CircleAvatar(
+            //   radius: 42,
+            //   backgroundColor: Colors.white,
+            //   child: Text(
+            //     user.firstName[0],
+            //     style: const TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
+            //   ),
+            // ),
             const SizedBox(height: 10),
             Text(
               "${user.firstName} ${user.lastName}",
@@ -267,7 +328,7 @@
             _buildInput("First Name", firstNameCtrl),
             _buildInput("Last Name", lastNameCtrl),
             _buildInput("Email", emailCtrl, enabled: false),
-            _buildInput("Time Zone", timeZoneCtrl),
+            _buildInput("Time Zone", timeZoneCtrl,enabled: false),
             _buildInput(
               "Language",
               languageCtrl,
@@ -381,6 +442,10 @@
 
             if (code != null && code != widget.user!.currencyCode) {
               body["currency"] = code;
+            }
+
+            if (selectedAvatar != widget.user!.avatar) {
+              body["avatar"] = selectedAvatar;
             }
 
             if (body.isEmpty) {
