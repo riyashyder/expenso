@@ -2,6 +2,7 @@
   import 'package:provider/provider.dart';
 
   import '../../../core/utils/helpers/snackbar_utils.dart';
+import '../../../utils/devices/get_localization_provider.dart';
 import '../controller/create_category_controller.dart';
 
   class CreateCategoryView extends StatefulWidget {
@@ -22,27 +23,65 @@ import '../controller/create_category_controller.dart';
     void initState() {
       super.initState();
 
-      nameController.addListener(() {
-        final text = nameController.text.trim();
-
-        // Only validate after user has interacted
-        if (nameTouched) {
-          if (text.isEmpty) {
-            nameError.value = "Category name cannot be empty";
-          } else if (text.length < 3) {
-            nameError.value = "Category name must be at least 3 letters";
-          } else {
-            nameError.value = null;
-          }
-        }
-
-        // Force rebuild button state
-        setState(() {});
-      });
+      nameController.addListener(_onFieldChanged);
+      descController.addListener(_onFieldChanged);
     }
 
-    bool get isFormValid =>
-        nameController.text.trim().length >= 3; // button enabled condition
+    void _onFieldChanged() {
+      final localizationController =
+      getLocalizationController(context, listen: false);
+
+      final text = nameController.text.trim();
+
+      if (nameTouched) {
+        if (text.isEmpty) {
+          nameError.value =
+              localizationController.getTextValue("CATEGORY_NAME_EMPTY");
+        } else if (text.length < 3) {
+          nameError.value =
+              localizationController.getTextValue("CATEGORY_NAME_MIN_LENGTH");
+        } else {
+          nameError.value = null;
+        }
+      }
+
+      setState(() {}); // 🔑 updates button state
+    }
+
+    // @override
+    // void initState() {
+    //   super.initState();
+    //
+    //   nameController.addListener(() {
+    //     final text = nameController.text.trim();
+    //     final localizationController = getLocalizationController(context, listen: false);
+    //     // Only validate after user has interacted
+    //     if (nameTouched) {
+    //       if (text.isEmpty) {
+    //         nameError.value = localizationController.getTextValue("CATEGORY_NAME_EMPTY");
+    //       } else if (text.length < 3) {
+    //         nameError.value = localizationController.getTextValue("CATEGORY_NAME_MIN_LENGTH");
+    //       } else {
+    //         nameError.value = null;
+    //       }
+    //     }
+    //
+    //     // Force rebuild button state
+    //     setState(() {});
+    //   });
+    // }
+
+    bool get isFormValid {
+      final controller = context.read<CategoryController>();
+
+      return nameController.text.trim().length >= 3 &&
+          descController.text.trim().isNotEmpty &&
+          controller.selectedType != null &&
+          controller.selectedIconId != null;
+    }
+
+    // bool get isFormValid =>
+    //     nameController.text.trim().length >= 3; // button enabled condition
 
     @override
     void dispose() {
@@ -55,11 +94,12 @@ import '../controller/create_category_controller.dart';
     @override
     Widget build(BuildContext context) {
       final controller = Provider.of<CategoryController>(context);
+      final localizationController = getLocalizationController(context, listen: false);
 
       return Scaffold(
         backgroundColor: const Color(0xFFF9FAFB),
         appBar: AppBar(
-          title: const Text("New Category"),
+          title:  Text(localizationController.getTextValue("NEW_CATEGORY_TRANS")),
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
@@ -83,8 +123,8 @@ import '../controller/create_category_controller.dart';
                         },
                         child: _buildTextField(
                           controller: nameController,
-                          label: "Category Name",
-                          hint: "e.g., Groceries",
+                          label: localizationController.getTextValue("CATEGORY_NAME"),
+                          hint: localizationController.getTextValue("CATEGORY_NAME_HINT"),
                           icon: Icons.title,
                         ),
                       ),
@@ -106,14 +146,14 @@ import '../controller/create_category_controller.dart';
               // Description field
               _buildTextField(
                 controller: descController,
-                label: "Description",
-                hint: "e.g., Food and household shopping",
+                label: localizationController.getTextValue("DESCRIPTION"),
+                hint: localizationController.getTextValue("DESCRIPTION_HINT"),
                 icon: Icons.description,
                 maxLines: 2,
               ),
               const SizedBox(height: 28),
-              const Text(
-                "Category Type",
+               Text(
+                localizationController.getTextValue("CATEGORY_TYPE"),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
@@ -137,7 +177,7 @@ import '../controller/create_category_controller.dart';
                     value: controller.selectedType,
                     isExpanded: true,
                     icon: const Icon(Icons.keyboard_arrow_down, color: Colors.blueAccent),
-                    hint: const Text("Select Category Type"),
+                    hint:  Text(localizationController.getTextValue("SELECT_CATEGORY_TYPE")),
                     items: controller.categoryTypes.map((type) {
                       return DropdownMenuItem(
                         value: type,
@@ -163,8 +203,8 @@ import '../controller/create_category_controller.dart';
               const SizedBox(height: 28),
 
 
-              const Text(
-                "Choose an Icon",
+               Text(
+                localizationController.getTextValue("CHOOSE_ICON"),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -174,7 +214,12 @@ import '../controller/create_category_controller.dart';
                 children: controller.icons.map((icon) {
                   final isSelected = controller.selectedIconId == icon.id;
                   return GestureDetector(
-                    onTap: () => controller.selectIcon(icon.id),
+                    onTap: () {
+                      controller.selectIcon(icon.id);
+                      setState(() {}); // ensure button updates
+                    },
+
+                    // onTap: () => controller.selectIcon(icon.id),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeInOut,
@@ -233,8 +278,8 @@ import '../controller/create_category_controller.dart';
                     if (result["success"]) Navigator.pop(context);
                   }
                       : null,
-                  child: const Text(
-                    "Create Category",
+                  child:  Text(
+                    localizationController.getTextValue("CREATE_CATEGORY"),
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

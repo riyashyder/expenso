@@ -50,6 +50,7 @@ class TransactionsController extends ChangeNotifier {
         return TransactionItem(
           title: e["category"] ?? "Transaction",
           category: e["category"] ?? "",
+          type: e["type"] ?? "expense",
           amount: double.tryParse(e["amount"].toString()) ?? 0,
           dateGroup: e["expenseDate"]?.split("T")[0] ?? "Unknown",
           icon: e["type"] == "income"

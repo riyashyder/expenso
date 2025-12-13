@@ -22,7 +22,101 @@ class AppLocalizationController extends ChangeNotifier {
         "jp": "このアプリは、あなたのお金の管理をサポートする賢くて頼れるパートナーです。いつでも支出の記録、請求のリマインド、そして財務的な達成のサポートをしてくれます。初心者から詳細な分析を求める上級者まで、あなたのライフスタイルに合わせて適応します。単なる記録ではなく、一歩ずつ経済的自由を築くためのアプリです。"
       },
 
-      "WELCOME_GET_STARTED": {
+    "PROFILE_EDIT_TITLE": {
+      "en": "Edit Profile",
+      "jp": "プロフィール編集"
+    },
+
+
+
+    "PROFILE_CHOOSE_AVATAR": {
+      "en": "Choose Avatar",
+      "jp": "アバターを選択"
+    },
+
+    "PROFILE_FIRST_NAME": {
+      "en": "First Name",
+      "jp": "名"
+    },
+
+    "PROFILE_LAST_NAME": {
+      "en": "Last Name",
+      "jp": "姓"
+    },
+
+    "PROFILE_EMAIL": {
+      "en": "Email",
+      "jp": "メールアドレス"
+    },
+
+    "PROFILE_TIME_ZONE": {
+      "en": "Time Zone",
+      "jp": "タイムゾーン"
+    },
+
+    "PROFILE_LANGUAGE": {
+      "en": "Language",
+      "jp": "言語"
+    },
+
+    "PROFILE_CURRENCY": {
+      "en": "Currency",
+      "jp": "通貨"
+    },
+
+    "PROFILE_SELECT_LANGUAGE": {
+      "en": "Select Language",
+      "jp": "言語を選択"
+    },
+
+    "LANGUAGE_ENGLISH": {
+      "en": "English",
+      "jp": "英語"
+    },
+
+    "LANGUAGE_ARABIC": {
+      "en": "Arabic",
+      "jp": "アラビア語"
+    },
+
+    "LANGUAGE_JAPANESE": {
+      "en": "Japanese",
+      "jp": "日本語"
+    },
+
+    "PROFILE_SELECT_CURRENCY": {
+      "en": "Select Currency",
+      "jp": "通貨を選択"
+    },
+
+    "PROFILE_SEARCH_CURRENCY": {
+      "en": "Search currency...",
+      "jp": "通貨を検索..."
+    },
+
+    "PROFILE_SAVE_CHANGES": {
+      "en": "Save Changes",
+      "jp": "変更を保存"
+    },
+
+    "PROFILE_NO_CHANGES": {
+      "en": "No changes to update",
+      "jp": "更新する変更はありません"
+    },
+
+    "PROFILE_UPDATE_SUCCESS": {
+      "en": "Profile updated successfully",
+      "jp": "プロフィールが正常に更新されました"
+    },
+
+    "PROFILE_UPDATE_FAILED": {
+      "en": "Update failed",
+      "jp": "更新に失敗しました"
+    },
+
+
+
+    "WELCOME_GET_STARTED": {
         "en": "Get Started",
         "ar": "ابدأ الآن",
         "jp": "始める"
@@ -166,6 +260,82 @@ class AppLocalizationController extends ChangeNotifier {
     "MONTH_NOV": { "en": "Nov", "ar": "نوفمبر", "jp": "11月" },
     "MONTH_DEC": { "en": "Dec", "ar": "ديسمبر", "jp": "12月" },
 
+    "NEW_CATEGORY_TRANS": {
+      "en": "New Category",
+      "jp": "新しいカテゴリ",
+    },
+    "CATEGORY_NAME": {
+      "en": "Category Name",
+      "jp": "カテゴリ名",
+    },
+    "CATEGORY_NAME_HINT": {
+      "en": "e.g., Groceries",
+      "jp": "例：食料品",
+    },
+    "CATEGORY_NAME_EMPTY": {
+      "en": "Category name cannot be empty",
+      "jp": "カテゴリ名を入力してください",
+    },
+    "CATEGORY_NAME_MIN_LENGTH": {
+      "en": "Category name must be at least 3 letters",
+      "jp": "カテゴリ名は3文字以上必要です",
+    },
+    "DESCRIPTION": {
+      "en": "Description",
+      "jp": "説明",
+    },
+    "DESCRIPTION_HINT": {
+      "en": "e.g., Food and household shopping",
+      "jp": "例：食品や家庭用品の買い物",
+    },
+    "CATEGORY_TYPE": {
+      "en": "Category Type",
+      "jp": "カテゴリタイプ",
+    },
+    "SELECT_CATEGORY_TYPE": {
+      "en": "Select Category Type",
+      "jp": "カテゴリタイプを選択",
+    },
+    "CHOOSE_ICON": {
+      "en": "Choose an Icon",
+      "jp": "アイコンを選択",
+    },
+    "CREATE_CATEGORY": {
+      "en": "Create Category",
+      "jp": "カテゴリを作成",
+    },
+
+
+    "RESET_PASSWORD": {
+      "en": "Reset Password",
+      "jp": "パスワードをリセット"
+    },
+    "RESET_OLD_PASSWORD": {
+      "en": "Old Password",
+      "jp": "現在のパスワード"
+    },
+    "RESET_NEW_PASSWORD": {
+      "en": "New Password",
+      "jp": "新しいパスワード"
+    },
+    "UPDATE_PASSWORD": {
+      "en": "Update Password",
+      "jp": "パスワードを更新"
+    },
+    "ERR_ENTER_OLD_PASSWORD": {
+      "en": "Enter old password",
+      "jp": "現在のパスワードを入力してください"
+    },
+    "ERR_ENTER_NEW_PASSWORD": {
+      "en": "Enter new password",
+      "jp": "新しいパスワードを入力してください"
+    },
+    "ERR_PASSWORD_LENGTH": {
+      "en": "Password must be at least 6 characters",
+      "jp": "パスワードは6文字以上である必要があります"
+    },
+
+
     "TRANS_FILTER_BY_DATE": {
       "en": "Filter by Date",
       "ar": "تصفية حسب التاريخ",
@@ -206,6 +376,17 @@ class AppLocalizationController extends ChangeNotifier {
       "ar": "الدخل",
       "jp": "収入"
     },
+    "TRANS_INCOME_SUB": {
+      "en": "INCOME",
+      "ar": "الدخل",
+      "jp": "収入"
+    },
+    "TRANS_EXPENSE": {
+      "en": "EXPENSE",
+      "ar": "المصروفات",
+      "jp": "支出"
+    },
+
     "TRANS_EXPENSES": {
       "en": "Expenses",
       "ar": "المصروفات",
@@ -265,6 +446,16 @@ class AppLocalizationController extends ChangeNotifier {
       "en": "Enter category",
       "ar": "أدخل الفئة",
       "jp": "カテゴリーを入力してください"
+    },
+    "SELECT_CATEGORY": {
+      "en": "Select a category",
+      "ar": "اختر فئة",
+      "ja": "カテゴリを選択"
+    },
+    "LOADING_CATEGORIES": {
+      "en": "Loading categories…",
+      "ar": "جارٍ تحميل الفئات…",
+      "ja": "カテゴリを読み込み中…"
     },
     "TRANS_TRANSACTION_TYPE": {
       "en": "Transaction Type",

@@ -1,12 +1,17 @@
 import 'dart:convert';
+
+import 'package:expense_tracker/features/settings/controller/reset_password_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// import '../../forgotPasswordFlow/controller/reset_new_password_controller.dart';
 import '../model/user_profile.dart';
 import '../model/settings_item.dart';
 import '../../../utils/devices/get_localization_provider.dart';
 import '../view/profile_screen.dart';
+import '../view/reset_password_view.dart';
 
 class SettingsController extends ChangeNotifier {
   bool notificationsEnabled = true;
@@ -91,19 +96,20 @@ class SettingsController extends ChangeNotifier {
         subtitle: loc.getTextValue("PRE_THEME_SUBTITLE"),
         trailing: loc.getTextValue("PRE_THEME_TRAILING"),
         onTap: () {},
+        isSwitch: true,
       ),
-      SettingsItem(
-        title: loc.getTextValue("PRE_CURRENCY"),
-        subtitle: loc.getTextValue("PRE_CURRENCY_SUBTITLE"),
-        trailing: userProfile?.currencyCode ?? "—",
-        onTap: () {},
-      ),
-      SettingsItem(
-        title: loc.getTextValue("PRE_LANGUAGE"),
-        subtitle: loc.getTextValue("PRE_LANGUAGE_SUBTITLE"),
-        trailing: userProfile?.preferredLanguage.toUpperCase() ?? "—",
-        onTap: () {},
-      ),
+      // SettingsItem(
+      //   title: loc.getTextValue("PRE_CURRENCY"),
+      //   subtitle: loc.getTextValue("PRE_CURRENCY_SUBTITLE"),
+      //   trailing: userProfile?.currencyCode ?? "—",
+      //   onTap: () {},
+      // ),
+      // SettingsItem(
+      //   title: loc.getTextValue("PRE_LANGUAGE"),
+      //   subtitle: loc.getTextValue("PRE_LANGUAGE_SUBTITLE"),
+      //   trailing: userProfile?.preferredLanguage.toUpperCase() ?? "—",
+      //   onTap: () {},
+      // ),
     ];
   }
 
@@ -117,22 +123,42 @@ class SettingsController extends ChangeNotifier {
         subtitle: userProfile != null
             ? "${userProfile!.firstName} ${userProfile!.lastName}"
             : null,
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => ProfileScreen(user: userProfile),
             ),
           );
+
+          //  REFRESH WHEN COMING BACK
+          if (result == true) {
+            await fetchUserProfile();
+          }
         },
       ),
 
-      SettingsItem(title: loc.getTextValue("PRE_SECURITY"), onTap: () {}),
+
+      // SettingsItem(title: loc.getTextValue("PRE_SECURITY"), onTap: () {}),
+      // SettingsItem(
+      //   title: loc.getTextValue("PRE_NOTIFICATIONS"),
+      //   isSwitch: true,
+      //   switchValue: notificationsEnabled,
+      //   onTap: () {},
+      // ),
       SettingsItem(
-        title: loc.getTextValue("PRE_NOTIFICATIONS"),
-        isSwitch: true,
-        switchValue: notificationsEnabled,
-        onTap: () {},
+        title: loc.getTextValue("RESET_PASSWORD"),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ChangeNotifierProvider(
+                create: (_) => ResetSettingsPasswordController(),
+                child: const ResetPasswordView(),
+              ),
+            ),
+          );
+        },
       ),
       SettingsItem(
         title: loc.getTextValue("PRE_LOGOUT"),
@@ -149,8 +175,36 @@ class SettingsController extends ChangeNotifier {
       SettingsItem(title: loc.getTextValue("PRE_TERMS_OF_SERVICE"), onTap: () {}),
       SettingsItem(title: loc.getTextValue("PRE_PRIVACY_POLICY"), onTap: () {}),
       SettingsItem(title: loc.getTextValue("PRE_CONTACT_US"), onTap: () {}),
+      // SettingsItem(
+      //   title: loc.getTextValue("RESET_PASSWORD"),
+      //   onTap: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (_) => ChangeNotifierProvider(
+      //           create: (_) => ResetSettingsPasswordController(),
+      //           child: const ResetPasswordView(),
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // ),
+
+      // SettingsItem(
+      //   title: loc.getTextValue("RESET_PASSWORD"),
+      //   onTap: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (_) => const ResetPasswordView(),
+      //       ),
+      //     );
+      //   },
+      // ),
+
     ];
   }
+
 
   void toggleNotifications(bool value) {
     notificationsEnabled = value;

@@ -8,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'core/localization/app_localization_controller.dart';
+import 'core/theme/app_theme.dart';
+import 'core/theme/theme_controller.dart';
 import 'features/accounts/controller/account_controller.dart';
 import 'features/budgets/controller/budget_controller.dart';
 import 'features/categories/controller/category_controller.dart';
@@ -18,12 +20,14 @@ import 'features/exportData/controller/export_controller.dart';
 import 'features/forgotPasswordFlow/controller/forgot_pass_code_controller.dart';
 import 'features/forgotPasswordFlow/controller/forgot_pass_email_controller.dart';
 import 'features/forgotPasswordFlow/controller/otp_timer_controller.dart';
+import 'features/forgotPasswordFlow/controller/reset_new_password_controller.dart';
 import 'features/login/controller/login_controller.dart';
 import 'features/login/controller/register_controller.dart';
 import 'features/navigationScreens/controller/bottom_nav_provider.dart';
 import 'features/navigationScreens/view/bottom_navigation_bar.dart';
 import 'features/onboarding/view/welcome_view.dart';
 import 'features/report/controller/report_controller.dart';
+import 'features/settings/controller/currency_provider.dart';
 import 'features/settings/controller/settings_controller.dart';
 import 'features/transactions/controller/transaction_api_controller.dart';
 import 'features/transactions/controller/transaction_controller.dart';
@@ -44,6 +48,8 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+  final currencyProvider = CurrencyProvider();
+  await currencyProvider.loadCurrency(); //  load saved value
 
   runApp(
     MultiProvider(
@@ -54,6 +60,8 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => BudgetController(),
         ),
+        ChangeNotifierProvider(create: (_) => currencyProvider),
+        ChangeNotifierProvider(create: (_) => ThemeController()),
         ChangeNotifierProvider(create: (_) => TransactionsController()),
         ChangeNotifierProvider(create: (_) => TransactionApiController()),
         ChangeNotifierProvider(create: (_) => ReportsController()),
@@ -65,6 +73,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => BottomNavProvider()),
         ChangeNotifierProvider(create: (_) => DashboardController()),
         ChangeNotifierProvider(create: (_) => SettingsController()),
+        ChangeNotifierProvider(create: (_) => ResetPasswordController()),
         ChangeNotifierProvider(create: (_) => ExportController()),
         ChangeNotifierProvider(
           create: (_) => OtpTimerController(60), // pass int here
@@ -92,8 +101,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final themeController = context.watch<ThemeController>();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme(context),
+      darkTheme: AppTheme.darkTheme(context),
+      themeMode: themeController.isDarkTheme
+          ? ThemeMode.dark
+          : ThemeMode.light,
       title: 'Flutter Demo',
       initialRoute: AppRoutes.splash,
       routes: {
@@ -112,11 +128,11 @@ class MyApp extends StatelessWidget {
 
 
       },
-      theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme,
-        ),
-      ),
+      // theme: ThemeData(
+      //   textTheme: GoogleFonts.poppinsTextTheme(
+      //     Theme.of(context).textTheme,
+      //   ),
+      // ),
 
     );
   }

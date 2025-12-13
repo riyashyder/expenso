@@ -71,24 +71,24 @@ class ExportScreen extends StatelessWidget {
             _buildDateField(context,localizationController.getTextValue(
               "TO_DATE",
             ), controller.toDate, () => _selectDate(context, false)),
-            const SizedBox(height: 24),
-
-             Text(localizationController.getTextValue(
-              "FILE_FORMAT",
-            ), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                _buildFormatButton(context, localizationController.getTextValue(
-                  "CSV",
-                ), FileFormat.csv, controller.selectedFormat == FileFormat.csv),
-                const SizedBox(width: 12),
-                _buildFormatButton(context, localizationController.getTextValue(
-                  "PDF",
-                ), FileFormat.pdf, controller.selectedFormat == FileFormat.pdf),
-              ],
-            ),
+            // const SizedBox(height: 24),
+            //
+            //  Text(localizationController.getTextValue(
+            //   "FILE_FORMAT",
+            // ), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            // const SizedBox(height: 12),
+            //
+            // Row(
+            //   children: [
+            //     _buildFormatButton(context, localizationController.getTextValue(
+            //       "CSV",
+            //     ), FileFormat.csv, controller.selectedFormat == FileFormat.csv),
+            //     const SizedBox(width: 12),
+            //     _buildFormatButton(context, localizationController.getTextValue(
+            //       "PDF",
+            //     ), FileFormat.pdf, controller.selectedFormat == FileFormat.pdf),
+            //   ],
+            // ),
 
             const Spacer(),
 

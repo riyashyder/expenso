@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/devices/get_localization_provider.dart';
+import '../../categories/controller/create_category_controller.dart';
+import '../../settings/controller/currency_provider.dart';
 import '../controller/transaction_controller.dart';
 import '../model/transaction_item.dart';
 
@@ -17,26 +19,48 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   DateTime? _filterFromDate;
   DateTime? _filterToDate;
 
+  bool get _isFilterApplied {
+    return _filterFromDate != null && _filterToDate != null;
+  }
+
+
+
+
 
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      final controller = context.read<TransactionsController>();
-
-      final now = DateTime.now();
-      final from = DateTime(now.year, now.month, 1).toIso8601String().split('T').first;
-      final to = DateTime(now.year, now.month + 1, 0).toIso8601String().split('T').first;
-
-      controller.fetchTransactions(from: from, to: to);
+      _loadDefaultTransactions();
     });
+  }
+
+
+  void _loadDefaultTransactions() {
+    final controller =
+    Provider.of<TransactionsController>(context, listen: false);
+
+    final now = DateTime.now();
+    final from = DateTime(now.year, now.month, 1)
+        .toIso8601String()
+        .split('T')
+        .first;
+    final to = DateTime(now.year, now.month + 1, 0)
+        .toIso8601String()
+        .split('T')
+        .first;
+
+    controller.fetchTransactions(from: from, to: to);
   }
 
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TransactionsController>();
+    final currency = context.watch<CurrencyProvider>();
+    final symbol = currency.symbol;
+
 
     return Scaffold(
       body: controller.isLoading
@@ -47,29 +71,63 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
 
           _buildSummaryCard(controller),
-          _buildTabs(controller),
+          // _buildTabs(controller),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Align(
               alignment: Alignment.centerRight,
-              child: GestureDetector(onTap:(){
-                _openFilterBottomSheet(context);
-              },child: Icon(Icons.filter_list)),
+              child: GestureDetector(
+                onTap: () {
+                  _openFilterBottomSheet(context);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.filter_list,
+                      color: _isFilterApplied
+                          ? Colors.blue.shade900
+                          : Colors.black,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Filter",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black
+                        // color: _isFilterApplied
+                        //     ? Colors.blue.shade900
+                        //     : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
+
           ..._buildGroupedTransactions(controller.filteredTransactions),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
+        onPressed: () async {
+          final result = await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            builder: (context) => const TransactionInputSheet(),
+            builder: (context) => ChangeNotifierProvider(
+              create: (_) => CategoryController()..getCategories(),
+              child: const TransactionInputSheet(),
+            ),
+
+            // builder: (context) => const TransactionInputSheet(),
           );
+          if (result == true) {
+            _loadDefaultTransactions();
+          }
         },
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add, color: Colors.white),
@@ -161,7 +219,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                       _filterFromDate = null;
                       _filterToDate = null;
                     });
-                    controller.fetchTransactions(); // reset filter
+                    // controller.fetchTransactions(); // reset filter
                   },
                   child: const Text("Clear"),
                 ),
@@ -199,6 +257,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       context,
       listen: false,
     );
+    final currency = context.watch<CurrencyProvider>();
+    final symbol = currency.symbol;
+
 
     return Container(
       margin: const EdgeInsets.all(16),
@@ -213,15 +274,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _summaryTile(localizationController.getTextValue(
+              _summaryTile('$symbol${localizationController.getTextValue(
                 "TRANS_INCOME",
-              ), controller.totalIncome, Colors.green),
-              _summaryTile(localizationController.getTextValue(
+              )}', controller.totalIncome, Colors.green),
+              _summaryTile('$symbol${localizationController.getTextValue(
                 "TRANS_EXPENSES",
-              ), controller.totalExpense, Colors.red),
-              _summaryTile(localizationController.getTextValue(
+              )}' ,controller.totalExpense, Colors.red),
+              _summaryTile('$symbol${localizationController.getTextValue(
                 "TRANS_NET",
-              ), controller.netTotal, Colors.blue),
+              )}', controller.netTotal, Colors.blue),
             ],
           ),
         ],
@@ -230,11 +291,14 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   }
 
   Widget _summaryTile(String title, double amount, Color color) {
+    final currency = context.watch<CurrencyProvider>();
+    final symbol = currency.symbol;
+
     return Column(
       children: [
         Text(title, style: const TextStyle(color: Colors.grey)),
         Text(
-          "\$${amount.toStringAsFixed(2)}",
+          "$symbol${amount.toStringAsFixed(2)}",
           style: TextStyle(
               color: color, fontWeight: FontWeight.bold, fontSize: 18),
         ),
@@ -445,7 +509,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                           });
 
                           // Apply filter with current month
-                          controller.fetchTransactions();
+                          _loadDefaultTransactions();
+
+                          // controller.fetchTransactions();
 
                           Navigator.pop(context);
                         } : null,
@@ -520,6 +586,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
 
   Widget _buildTransactionTile(TransactionItem transaction) {
+    final currency = context.watch<CurrencyProvider>();
+    final symbol = currency.symbol;
+    final isExpense = transaction.type == "expense";
+    final localizationController = getLocalizationController(
+      context,
+      listen: false,
+    );
+
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
@@ -532,11 +607,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           child: Icon(transaction.icon, color: Colors.blue),
         ),
         title: Text(transaction.title, style: const TextStyle(fontWeight: FontWeight.w500)),
-        subtitle: Text(transaction.category, style: const TextStyle(color: Colors.grey)),
+        subtitle: Text(isExpense ? localizationController.getTextValue("TRANS_EXPENSE") : localizationController.getTextValue("TRANS_INCOME_SUB"), style: const TextStyle(color: Colors.grey)),
         trailing: Text(
-          "${transaction.amount < 0 ? "" : "+"}\$${transaction.amount.toStringAsFixed(2)}",
+          "${isExpense ? "-" : "+"}$symbol${transaction.amount.toStringAsFixed(2)}",
           style: TextStyle(
-            color: transaction.amount < 0 ? Colors.red : Colors.green,
+            color: isExpense ? Colors.red : Colors.green,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -564,6 +639,63 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
     context,
     listen: false,
   );
+  bool _isFormFilled = false;
+  String? _selectedCategoryId;
+  String? _selectedCategoryName;
+
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Future.microtask(() {
+  //     context.read<CategoryController>().getCategories();
+  //   });
+  // }
+
+
+  void _checkFormFilled() {
+    final isFilled =
+        _amountController.text.isNotEmpty &&
+            double.tryParse(_amountController.text) != null &&
+            _selectedCategoryId != null &&
+            _selectedDate != null &&
+            _selectedType != null;
+
+    if (_isFormFilled != isFilled) {
+      setState(() {
+        _isFormFilled = isFilled;
+      });
+    }
+  }
+
+  // void _checkFormFilled() {
+  //   final isFilled =
+  //       _amountController.text.isNotEmpty &&
+  //           double.tryParse(_amountController.text) != null &&
+  //           _categoryController.text.isNotEmpty &&
+  //           _selectedDate != null &&
+  //           _selectedType != null;
+  //
+  //   if (_isFormFilled != isFilled)   {
+  //     setState(() {
+  //       _isFormFilled = isFilled;
+  //     });
+  //   }
+  // }
+
+  // void _checkFormFilled() {
+  //   final isFilled =
+  //       _amountController.text.isNotEmpty &&
+  //           double.tryParse(_amountController.text) != null &&
+  //           _categoryController.text.isNotEmpty &&
+  //           _selectedDate != null;
+  //
+  //   if (_isFormFilled != isFilled) {
+  //     setState(() {
+  //       _isFormFilled = isFilled;
+  //     });
+  //   }
+  // }
 
 
   Future<void> _submit() async {
@@ -572,18 +704,27 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
     final controller = context.read<TransactionsController>();
 
     await controller.createTransaction(
-      expenseDate: _selectedDate?.toIso8601String().split('T').first ?? '',
-      type: _selectedType,
-      category: _categoryController.text.trim(),
+      expenseDate: _selectedDate!.toIso8601String().split('T').first,
+      type: _selectedType!,
+      category:  _selectedCategoryName!,
+      // category: _categoryController.text.trim(),
       amount: double.parse(_amountController.text),
     );
 
-    if (mounted) {
-      Navigator.pop(context); // Close bottom sheet
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Transaction created successfully!')),
-      );
-    }
+    // await controller.createTransaction(
+    //   expenseDate: _selectedDate?.toIso8601String().split('T').first ?? '',
+    //   type: _selectedType,
+    //   category: _categoryController.text.trim(),
+    //   amount: double.parse(_amountController.text),
+    // );
+
+    if (!mounted) return;
+
+    Navigator.pop(context, true);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Transaction created successfully!')),
+    );
   }
 
   @override
@@ -622,104 +763,333 @@ class _TransactionInputSheetState extends State<TransactionInputSheet> {
               const SizedBox(height: 16),
 
               // Amount field
+              // TextFormField(
+              //   controller: _amountController,
+              //   keyboardType: TextInputType.number,
+              //   decoration:  InputDecoration(
+              //     labelText: "${localizationController.getTextValue(
+              //       "TRANS_AMOUNT",
+              //     )}",
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) return "${localizationController.getTextValue(
+              //       "TRANS_ENTER_AMOUNT",
+              //     )}";
+              //     if (double.tryParse(value) == null) return "${localizationController.getTextValue(
+              //       "TRANS_ENTER_VALID_NUMBER",
+              //     )}";
+              //     return null;
+              //   },
+              // ),
               TextFormField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                decoration:  InputDecoration(
-                  labelText: "${localizationController.getTextValue(
-                    "TRANS_AMOUNT",
-                  )}",
-                  border: OutlineInputBorder(),
+                onChanged: (_) => _checkFormFilled(),
+                decoration: InputDecoration(
+                  labelText: localizationController.getTextValue("TRANS_AMOUNT"),
+                  border: const OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return "${localizationController.getTextValue(
-                    "TRANS_ENTER_AMOUNT",
-                  )}";
-                  if (double.tryParse(value) == null) return "${localizationController.getTextValue(
-                    "TRANS_ENTER_VALID_NUMBER",
-                  )}";
+                  if (value == null || value.isEmpty) {
+                    return localizationController.getTextValue("TRANS_ENTER_AMOUNT");
+                  }
+                  if (double.tryParse(value) == null) {
+                    return localizationController.getTextValue("TRANS_ENTER_VALID_NUMBER");
+                  }
                   return null;
                 },
               ),
+
               const SizedBox(height: 16),
 
               // Category field
-              TextFormField(
-                controller: _categoryController,
-                decoration:  InputDecoration(
-                  labelText: "${localizationController.getTextValue(
-                    "TRANS_CATEGORY",
-                  )}",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                value == null || value.isEmpty ? "${localizationController.getTextValue(
-                  "TRANS_ENTER_CATEGORY",
-                )}" : null,
+              Consumer<CategoryController>(
+                builder: (context, categoryController, _) {
+                  final isLoading = categoryController.isLoading;
+                  final categories = categoryController.categories;
+
+                  return DropdownButtonFormField<String>(
+                    value: _selectedCategoryId,
+                    items: categories.map((category) {
+                      return DropdownMenuItem<String>(
+                        value: category.id,
+                        child: Row(
+                          children: [
+                            Icon(
+                              categoryController.getIconById(category.icon),
+                              size: 18,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(category.name),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+
+                    onChanged: isLoading
+                        ? null
+                        : (value) {
+                      setState(() {
+                        _selectedCategoryId = value;
+                        _selectedCategoryName = categories
+                            .firstWhere((c) => c.id == value)
+                            .name;
+                      });
+                      _checkFormFilled();
+                    },
+
+                    validator: (value) {
+                      if (!isLoading && value == null) {
+                        return localizationController.getTextValue(
+                          "TRANS_ENTER_CATEGORY",
+                        );
+                      }
+                      return null;
+                    },
+
+                    decoration: InputDecoration(
+                      labelText: localizationController.getTextValue("TRANS_CATEGORY"),
+                      border: const OutlineInputBorder(),
+
+                      // 👇 subtle loading hint
+                      hintText: isLoading
+                          ? localizationController.getTextValue("LOADING_CATEGORIES")
+                          : localizationController.getTextValue("SELECT_CATEGORY"),
+
+                      // 👇 spinner INSIDE field (small & clean)
+                      suffixIcon: isLoading
+                          ? const Padding(
+                        padding: EdgeInsets.all(12),
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                          : const Icon(Icons.arrow_drop_down),
+                    ),
+                  );
+                },
               ),
+
+              // Consumer<CategoryController>(
+              //   builder: (context, categoryController, _) {
+              //     // if (categoryController.categories.isEmpty) {
+              //     //   return const Center(child: CircularProgressIndicator());
+              //     // }
+              //
+              //     return DropdownButtonFormField<String>(
+              //       value: _selectedCategoryId,
+              //       items: categoryController.categories.map((category) {
+              //         return DropdownMenuItem<String>(
+              //           value: category.id,
+              //           child: Row(
+              //             children: [
+              //               Icon(
+              //                 categoryController.getIconById(category.icon),
+              //                 size: 18,
+              //               ),
+              //               const SizedBox(width: 8),
+              //               Text(category.name),
+              //             ],
+              //           ),
+              //         );
+              //       }).toList(),
+              //       onChanged: (value) {
+              //         setState(() {
+              //           _selectedCategoryId = value;
+              //           _selectedCategoryName = categoryController.categories
+              //               .firstWhere((c) => c.id == value)
+              //               .name;
+              //         });
+              //         _checkFormFilled();
+              //       },
+              //       validator: (value) {
+              //         if (value == null) {
+              //           return localizationController.getTextValue(
+              //             "TRANS_ENTER_CATEGORY",
+              //           );
+              //         }
+              //         return null;
+              //       },
+              //       decoration: InputDecoration(
+              //         labelText: localizationController.getTextValue("TRANS_CATEGORY"),
+              //         border: const OutlineInputBorder(),
+              //       ),
+              //     );
+              //   },
+              // ),
+
+              // TextFormField(
+              //   controller: _categoryController,
+              //   onChanged: (_) => _checkFormFilled(),
+              //   decoration: InputDecoration(
+              //     labelText: localizationController.getTextValue("TRANS_CATEGORY"),
+              //     border: const OutlineInputBorder(),
+              //   ),
+              //   validator: (value) =>
+              //   value == null || value.isEmpty
+              //       ? localizationController.getTextValue("TRANS_ENTER_CATEGORY")
+              //       : null,
+              // ),
+
+              // TextFormField(
+              //   controller: _categoryController,
+              //   decoration:  InputDecoration(
+              //     labelText: "${localizationController.getTextValue(
+              //       "TRANS_CATEGORY",
+              //     )}",
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   validator: (value) =>
+              //   value == null || value.isEmpty ? "${localizationController.getTextValue(
+              //     "TRANS_ENTER_CATEGORY",
+              //   )}" : null,
+              // ),
               const SizedBox(height: 16),
 
               // Transaction Type dropdown
               DropdownButtonFormField<String>(
                 value: _selectedType,
-                items:  [
-                  DropdownMenuItem(value: "income", child: Text("${localizationController.getTextValue(
-                    "TRANS_TYPE_INCOME",
-                  )}")),
-                  DropdownMenuItem(value: "expense", child: Text("${localizationController.getTextValue(
-                    "TRANS_TYPE_EXPENSE",
-                  )}")),
+                items: [
+                  DropdownMenuItem(
+                    value: "income",
+                    child: Text(localizationController.getTextValue("TRANS_TYPE_INCOME")),
+                  ),
+                  DropdownMenuItem(
+                    value: "expense",
+                    child: Text(localizationController.getTextValue("TRANS_TYPE_EXPENSE")),
+                  ),
                 ],
-                onChanged: (value) => setState(() => _selectedType = value!),
-                decoration:  InputDecoration(
-                  labelText: "${localizationController.getTextValue(
+                onChanged: (value) {
+                  setState(() {
+                    _selectedType = value!;
+                  });
+                  _checkFormFilled();
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return localizationController.getTextValue(
+                      "TRANS_SELECT_TRANSACTION_TYPE",
+                    );
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: localizationController.getTextValue(
                     "TRANS_TRANSACTION_TYPE",
-                  )}",
-                  border: OutlineInputBorder(),
+                  ),
+                  border: const OutlineInputBorder(),
                 ),
               ),
+
+              // DropdownButtonFormField<String>(
+              //   value: _selectedType,
+              //   items:  [
+              //     DropdownMenuItem(value: "income", child: Text("${localizationController.getTextValue(
+              //       "TRANS_TYPE_INCOME",
+              //     )}")),
+              //     DropdownMenuItem(value: "expense", child: Text("${localizationController.getTextValue(
+              //       "TRANS_TYPE_EXPENSE",
+              //     )}")),
+              //   ],
+              //   onChanged: (value) => setState(() => _selectedType = value!),
+              //   decoration:  InputDecoration(
+              //     labelText: "${localizationController.getTextValue(
+              //       "TRANS_TRANSACTION_TYPE",
+              //     )}",
+              //     border: OutlineInputBorder(),
+              //   ),
+              // ),
               const SizedBox(height: 16),
 
               // Date picker
-              InkWell(
-                onTap: () async {
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2020),
-                    lastDate: DateTime(2030),
-                  );
-                  if (picked != null) {
-                    setState(() => _selectedDate = picked);
+              FormField<DateTime>(
+                validator: (_) {
+                  if (_selectedDate == null) {
+                    return localizationController.getTextValue("TRANS_SELECT_DATE");
                   }
+                  return null;
                 },
-                child: InputDecorator(
-                  decoration:  InputDecoration(
-                    labelText: "${localizationController.getTextValue(
-                  "TRANS_DATE",
-                  )}",
-                    border: OutlineInputBorder(),
-                  ),
-                  child: Text(
-                    _selectedDate == null
-                        ? "${localizationController.getTextValue(
-                      "TRANS_SELECT_DATE",
-                    )}"
-                        : _selectedDate!.toIso8601String().split('T').first,
-                    style: TextStyle(
-                        color: _selectedDate == null
-                            ? Colors.grey
-                            : Colors.black87),
-                  ),
+                builder: (state) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2030),
+                        );
+                        if (picked != null) {
+                          setState(() => _selectedDate = picked);
+                          _checkFormFilled();
+                        }
+                      },
+                      child: InputDecorator(
+                        decoration: InputDecoration(
+                          labelText: localizationController.getTextValue("TRANS_DATE"),
+                          border: const OutlineInputBorder(),
+                          errorText: state.errorText,
+                        ),
+                        child: Text(
+                          _selectedDate == null
+                              ? localizationController.getTextValue("TRANS_SELECT_DATE")
+                              : _selectedDate!.toIso8601String().split('T').first,
+                          style: TextStyle(
+                            color: _selectedDate == null ? Colors.grey : Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
+              // InkWell(
+              //   onTap: () async {
+              //     final picked = await showDatePicker(
+              //       context: context,
+              //       initialDate: DateTime.now(),
+              //       firstDate: DateTime(2020),
+              //       lastDate: DateTime(2030),
+              //     );
+              //     if (picked != null) {
+              //       setState(() => _selectedDate = picked);
+              //       _checkFormFilled();
+              //     }
+              //   },
+              //   child: InputDecorator(
+              //     decoration:  InputDecoration(
+              //       labelText: "${localizationController.getTextValue(
+              //     "TRANS_DATE",
+              //     )}",
+              //       border: OutlineInputBorder(),
+              //     ),
+              //     child: Text(
+              //       _selectedDate == null
+              //           ? "${localizationController.getTextValue(
+              //         "TRANS_SELECT_DATE",
+              //       )}"
+              //           : _selectedDate!.toIso8601String().split('T').first,
+              //       style: TextStyle(
+              //           color: _selectedDate == null
+              //               ? Colors.grey
+              //               : Colors.black87),
+              //     ),
+              //   ),
+              // ),
               const SizedBox(height: 24),
 
               // Submit button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _submit,
+                  onPressed: _isFormFilled ? _submit : null,
+
+                  // onPressed: _submit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade900, // Dark blue
                     foregroundColor: Colors.white, // White text

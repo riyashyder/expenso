@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 import '../../../utils/devices/get_localization_provider.dart';
+import '../../settings/controller/currency_provider.dart';
 import '../controller/report_controller.dart';
 
 class ReportsScreen extends StatelessWidget {
@@ -10,6 +11,9 @@ class ReportsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = context.watch<CurrencyProvider>();
+    final symbol = currency.symbol;
+
     final controller = context.watch<ReportsController>();
 
     if (controller.isLoading) {
@@ -76,39 +80,40 @@ class ReportsScreen extends StatelessWidget {
             /// -----------------------------------
             /// TOP CARDS
             /// -----------------------------------
-            Row(
-              children: [
-                Expanded(
-                  child: _valueCard(
-                    title: "${localizationController.getTextValue(
-                      "TOTAL_INCOME",
-                    )}",
-                    value: controller.dashboardCards["totalIncome"],
-                    color: Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _valueCard(
-                    title: localizationController.getTextValue(
-                      "TOTAL_EXPENSE",
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch, // ⭐ IMPORTANT
+                children: [
+                  Expanded(
+                    child: _valueCard(
+                      title: localizationController.getTextValue("TOTAL_INCOME"),
+                      value: controller.dashboardCards["totalIncome"],
+                      color: Colors.green,
+                      symbol: symbol,
                     ),
-                    value: controller.dashboardCards["totalExpense"],
-                    color: Colors.red,
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _valueCard(
-                    title: localizationController.getTextValue(
-                      "THIS_MONTH_REPORT",
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _valueCard(
+                      title: localizationController.getTextValue("TOTAL_EXPENSE"),
+                      value: controller.dashboardCards["totalExpense"],
+                      color: Colors.red,
+                      symbol: symbol,
                     ),
-                    value: controller.dashboardCards["thisMonthExpense"],
-                    color: Colors.blue,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _valueCard(
+                      title: localizationController.getTextValue("THIS_MONTH_REPORT"),
+                      value: controller.dashboardCards["thisMonthExpense"],
+                      color: Colors.blue,
+                      symbol: symbol,
+                    ),
+                  ),
+                ],
+              ),
             ),
+
 
             // const SizedBox(height: 20),
             //
@@ -231,7 +236,7 @@ class ReportsScreen extends StatelessWidget {
           Text(
             "${localizationController.getTextValue(
     "TOTAL_INCOME_AMOUNT",
-    )} ₹${data.monthlyIncome.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+    )} $symbol${data.monthlyIncome.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -241,7 +246,7 @@ class ReportsScreen extends StatelessWidget {
           Text(
             "${localizationController.getTextValue(
     "TOTAL_EXPENSE_AMOUNT",
-    )} ₹${data.monthlyExpense.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+    )} $symbol${data.monthlyExpense.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
@@ -323,7 +328,7 @@ class ReportsScreen extends StatelessWidget {
     SizedBox(
     width: 60,
     child: Text(
-    "₹${income.toStringAsFixed(0)}",
+    "$symbol${income.toStringAsFixed(0)}",
     textAlign: TextAlign.right,
     style: const TextStyle(
     fontSize: 12, fontWeight: FontWeight.w600),
@@ -370,7 +375,7 @@ class ReportsScreen extends StatelessWidget {
     SizedBox(
     width: 60,
     child: Text(
-    "₹${expense.toStringAsFixed(0)}",
+    "$symbol${expense.toStringAsFixed(0)}",
     textAlign: TextAlign.right,
     style: const TextStyle(
     fontSize: 12, fontWeight: FontWeight.w600),
@@ -416,6 +421,7 @@ class ReportsScreen extends StatelessWidget {
     required String title,
     required num value,
     required Color color,
+    required String symbol,
   }) {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -431,7 +437,7 @@ class ReportsScreen extends StatelessWidget {
               const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           const SizedBox(height: 6),
           Text(
-            "₹$value",
+            "$symbol$value",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

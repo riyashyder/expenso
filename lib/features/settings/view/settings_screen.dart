@@ -37,25 +37,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF6F7FB),
       body: ListView(
+        padding: const EdgeInsets.only(bottom: 24),
         children: [
-          /// PREFERENCES SECTION
-          _buildSection(
-            localizationController.getTextValue("PREFERENCES") ?? "Preferences",
-            controller.getPreferences(context),
-            controller,
-            context,
-          ),
-
-          /// ACCOUNT SECTION
+          // _buildSection(
+          //   localizationController.getTextValue("PREFERENCES") ?? "Preferences",
+          //   controller.getPreferences(context),
+          //   controller,
+          //   context,
+          // ),
           _buildSection(
             localizationController.getTextValue("ACCOUNT") ?? "Account",
             controller.getAccount(context),
             controller,
             context,
           ),
-
-          /// PRIVACY SECTION
           _buildSection(
             localizationController.getTextValue("PRIVACY") ?? "Privacy",
             controller.getPrivacy(context),
@@ -65,6 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+
   }
 
   /// LOGOUT CONFIRMATION DIALOG
@@ -77,16 +75,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title: Text(localizationController.getTextValue("CONFIRM_LOGOUT")),
         content: Text(localizationController.getTextValue("LOGOUT_MESSAGE")),
         actions: [
-          AppElevatedButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            label: localizationController.getTextValue("BTN_CANCEL_SETTINGS"),
-            backgroundColor: Colors.black,
+          Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: AppElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  label: localizationController.getTextValue("BTN_CANCEL_SETTINGS"),
+                  backgroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14), // small padding
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: AppElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  label: localizationController.getTextValue("BTN_LOGOUT_SETTING"),
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                ),
+              ),
+
+            ],
           ),
-          const SizedBox(height: 10),
-          AppElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            label: localizationController.getTextValue("BTN_LOGOUT_SETTING"),
-          ),
+
+          // AppElevatedButton(
+          //
+          //   onPressed: () => Navigator.of(context).pop(false),
+          //   label: localizationController.getTextValue("BTN_CANCEL_SETTINGS"),
+          //   backgroundColor: Colors.black,
+          // ),
+
+          // AppElevatedButton(
+          //   onPressed: () => Navigator.of(context).pop(true),
+          //   label: localizationController.getTextValue("BTN_LOGOUT_SETTING"),
+          // ),
         ],
       ),
     );
@@ -118,25 +141,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
       SettingsController controller,
       BuildContext context,
       ) {
-    return Container(
-      margin: const EdgeInsets.only(top: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// HEADER
+          /// SECTION TITLE
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            padding: const EdgeInsets.only(left: 6, bottom: 8),
             child: Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              title.toUpperCase(),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade600,
+                letterSpacing: 0.6,
+              ),
             ),
           ),
 
-          /// ITEMS
+          /// CARD
           Container(
-            color: Colors.white,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: Column(
-              children: items.map((item) => _buildTile(item, controller, context)).toList(),
+              children: items
+                  .map((item) => _buildTile(item, controller, context))
+                  .toList(),
             ),
           ),
         ],
@@ -144,43 +184,85 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+
   /// EACH SETTING OPTION TILE
   Widget _buildTile(
       SettingsItem item,
       SettingsController controller,
       BuildContext context,
       ) {
-    final localizationController = getLocalizationController(context, listen: false);
+    final localizationController =
+    getLocalizationController(context, listen: false);
 
-    return Column(
-      children: [
-        ListTile(
-          title: Text(item.title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-          subtitle:
-          item.subtitle != null ? Text(item.subtitle!, style: const TextStyle(color: Colors.grey)) : null,
-          trailing: item.isSwitch
-              ? Switch(
-            value: controller.notificationsEnabled,
-            onChanged: (val) => controller.toggleNotifications(val),
-          )
-              : item.trailing != null
-              ? Text(item.trailing!, style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold))
-              : const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+    final isLogout =
+        item.title == localizationController.getTextValue("PRE_LOGOUT");
 
-          /// Logout Handler
-          onTap: () {
-            if (item.title == localizationController.getTextValue("PRE_LOGOUT")) {
-              _handleLogout(context);
-            } else {
-              item.onTap?.call();
-            }
-          },
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        if (isLogout) {
+          _handleLogout(context);
+        } else {
+          item.onTap?.call();
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            /// TITLE + SUBTITLE
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: isLogout ? Colors.red : Colors.black,
+                    ),
+                  ),
+                  if (item.subtitle != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      item.subtitle!,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ]
+                ],
+              ),
+            ),
+
+            /// TRAILING
+            if (item.isSwitch)
+              Switch(
+                value: controller.notificationsEnabled,
+                onChanged: controller.toggleNotifications,
+              )
+            else if (item.trailing != null)
+              Text(
+                item.trailing!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey,
+                ),
+              )
+            else
+              Icon(
+                Icons.chevron_right_rounded,
+                color: Colors.grey.shade400,
+                size: 26,
+              ),
+          ],
         ),
-
-        const Divider(height: 1),
-      ],
+      ),
     );
   }
+
 }
 
 

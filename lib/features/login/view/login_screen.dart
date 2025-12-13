@@ -156,80 +156,207 @@ import 'package:shared_preferences/shared_preferences.dart';
           ),
           const SizedBox(height: 20),
           Row(
-            children: [
-              Expanded(
-                child: AppElevatedButton(
-                  label: loginController.isLoading
-                      ? localizationController.getTextValue("LOGIN_BUTTON_LOADING")
-                      : localizationController.getTextValue("LOGIN_BUTTON"),
-                  textStyle: AppthemeData.buttonStyle,
-                  onPressed: (loginController.isFormValid && !loginController.isLoading)
-                      ? () async {
-                    FocusScope.of(context).unfocus();
-                    loginController.isLoading = true;
-                    loginController.notify(); // Refresh UI
+      children: [
+      Expanded(
+      child: AppElevatedButton(
+      label: loginController.isLoading
+      ? localizationController.getTextValue("LOGIN_BUTTON_LOADING")
+          : localizationController.getTextValue("LOGIN_BUTTON"),
+      textStyle: AppthemeData.buttonStyle,
+      onPressed:
+      (loginController.isFormValid && !loginController.isLoading)
+      ? () async {
+      FocusScope.of(context).unfocus();
+      loginController.isLoading = true;
+      loginController.notify();
 
-                    try {
-                      // Call login API
-                      final response = await http.post(
-                        Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/login'),
-                        headers: {"Content-Type": "application/json"},
-                        body: jsonEncode({
-                          "email": loginController.emailController.text,
-                          "password": loginController.passwordController.text,
-                        }),
-                      );
+      try {
+      final response = await http.post(
+      Uri.parse(
+      'https://z0vx5pwf-5000.inc1.devtunnels.ms/api/login',
+      ),
+      headers: {
+      "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+      "email":
+      loginController.emailController.text.trim(),
+      "password":
+      loginController.passwordController.text.trim(),
+      }),
+      );
 
-                      final result = jsonDecode(response.body);
+      debugPrint('LOGIN STATUS CODE: ${response.statusCode}');
+      debugPrint('LOGIN RESPONSE BODY: ${response.body}');
 
-                      if (response.statusCode == 200 && result['success'] == true) {
-                        final accessToken = result['data']['authDetails']['accessToken'];
-                        final userDetails = result['data']['userDetails'];
+      final result = jsonDecode(response.body);
 
-                        // Save token and user details in SharedPreferences
-                        final prefs = await SharedPreferences.getInstance();
-                          await prefs.setString('access_token', accessToken);
-                        await prefs.setString('user_email', userDetails['email']);
-                        await prefs.setString('user_first_name', userDetails['first_name']);
-                        await prefs.setString('user_last_name', userDetails['last_name']);
-                        await prefs.setString('user_time_zone', userDetails['time_zone']);
-                        await prefs.setString('user_language', userDetails['preferred_language']);
+      if (response.statusCode == 200 &&
+      result['success'] == true) {
+      final accessToken =
+      result['data']['authDetails']['accessToken'];
+      final userDetails =
+      result['data']['userDetails'];
 
-                        // Navigate to main screen
-                        if (context.mounted) {
-                          Navigator.of(context).pushReplacement(
-                            PageTransition.buildPageRoute(
-                              NavigatioScreen(),
-                              type: TransitionType.slide,
-                            ),
-                          );
-                        }
-                      } else {
-                        // Show error message
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(result['message'] ?? 'Login failed'),
-                            ),
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error: $e')),
-                        );
-                      }
-                    } finally {
-                      loginController.isLoading = false;
-                      loginController.notify(); // Refresh UI
-                    }
-                  }
-                      : null,
-                ),
-              ),
-            ],
-          )
+      final prefs =
+      await SharedPreferences.getInstance();
+      await prefs.setString(
+      'access_token', accessToken);
+      await prefs.setString(
+      'user_email', userDetails['email']);
+      await prefs.setString(
+      'user_first_name',
+      userDetails['first_name']);
+      await prefs.setString(
+      'user_last_name',
+      userDetails['last_name']);
+      await prefs.setString(
+      'user_time_zone',
+      userDetails['time_zone']);
+      await prefs.setString(
+      'user_language',
+      userDetails['preferred_language']);
+
+      if (context.mounted) {
+      Navigator.of(context).pushReplacement(
+      PageTransition.buildPageRoute(
+      NavigatioScreen(),
+      type: TransitionType.slide,
+      ),
+      );
+      }
+      } else {
+      /// ✅ Extract API error message safely
+      String errorMessage = 'Login failed';
+
+      if (result['error'] != null &&
+      result['error']['message'] != null) {
+      errorMessage = result['error']['message'];
+      }
+
+      if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+      content: Text(errorMessage),
+      backgroundColor: Colors.red.shade600,
+      behavior:
+      SnackBarBehavior.floating,
+      margin:
+      const EdgeInsets.all(16),
+      duration:
+      const Duration(seconds: 2),
+      ),
+      );
+      }
+      }
+      } catch (e, s) {
+      debugPrint('LOGIN ERROR: $e');
+      debugPrintStack(stackTrace: s);
+
+      if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+      content: const Text(
+      'Something went wrong. Please try again.'),
+      backgroundColor:
+      Colors.red.shade600,
+      behavior:
+      SnackBarBehavior.floating,
+      margin:
+      const EdgeInsets.all(16),
+      ),
+      );
+      }
+      } finally {
+      loginController.isLoading = false;
+      loginController.notify();
+      }
+      }
+          : null,
+      ),
+      ),
+      ],
+      ),
+      // Row(
+          //   children: [
+          //     Expanded(
+          //       child: AppElevatedButton(
+          //         label: loginController.isLoading
+          //             ? localizationController.getTextValue("LOGIN_BUTTON_LOADING")
+          //             : localizationController.getTextValue("LOGIN_BUTTON"),
+          //         textStyle: AppthemeData.buttonStyle,
+          //         onPressed: (loginController.isFormValid && !loginController.isLoading)
+          //             ? () async {
+          //           FocusScope.of(context).unfocus();
+          //           loginController.isLoading = true;
+          //           loginController.notify(); // Refresh UI
+          //
+          //           try {
+          //             // Call login API
+          //             final response = await http.post(
+          //               Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/login'),
+          //               headers: {"Content-Type": "application/json"},
+          //               body: jsonEncode({
+          //                 "email": loginController.emailController.text,
+          //                 "password": loginController.passwordController.text,
+          //               }),
+          //             );
+          //
+          //             debugPrint('LOGIN STATUS CODE: ${response.statusCode}');
+          //             debugPrint('LOGIN RESPONSE BODY: ${response.body}');
+          //
+          //             final result = jsonDecode(response.body);
+          //
+          //             debugPrint('LOGIN RESPONSE JSON: $result');
+          //
+          //             if (response.statusCode == 200 && result['success'] == true) {
+          //               final accessToken = result['data']['authDetails']['accessToken'];
+          //               final userDetails = result['data']['userDetails'];
+          //
+          //               // Save token and user details in SharedPreferences
+          //               final prefs = await SharedPreferences.getInstance();
+          //                 await prefs.setString('access_token', accessToken);
+          //               await prefs.setString('user_email', userDetails['email']);
+          //               await prefs.setString('user_first_name', userDetails['first_name']);
+          //               await prefs.setString('user_last_name', userDetails['last_name']);
+          //               await prefs.setString('user_time_zone', userDetails['time_zone']);
+          //               await prefs.setString('user_language', userDetails['preferred_language']);
+          //
+          //               // Navigate to main screen
+          //               if (context.mounted) {
+          //                 Navigator.of(context).pushReplacement(
+          //                   PageTransition.buildPageRoute(
+          //                     NavigatioScreen(),
+          //                     type: TransitionType.slide,
+          //                   ),
+          //                 );
+          //               }
+          //             } else {
+          //               // Show error message
+          //               if (context.mounted) {
+          //                 ScaffoldMessenger.of(context).showSnackBar(
+          //                   SnackBar(
+          //                     content: Text(result['message'] ?? 'Login failed'),
+          //                   ),
+          //                 );
+          //               }
+          //             }
+          //           } catch (e) {
+          //             if (context.mounted) {
+          //               ScaffoldMessenger.of(context).showSnackBar(
+          //                 SnackBar(content: Text('Error: $e')),
+          //               );
+          //             }
+          //           } finally {
+          //             loginController.isLoading = false;
+          //             loginController.notify(); // Refresh UI
+          //           }
+          //         }
+          //             : null,
+          //       ),
+          //     ),
+          //   ],
+          // )
 
 
           // Row(

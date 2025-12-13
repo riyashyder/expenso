@@ -1,6 +1,11 @@
-  import 'package:flutter/material.dart';
-  import '../controller/settings_controller.dart';
+  import 'package:expense_tracker/features/settings/view/select_language.dart';
+import 'package:flutter/material.dart';
+  import '../../../utils/devices/get_localization_provider.dart';
+import '../controller/currency_provider.dart';
+import '../controller/settings_controller.dart';
   import '../model/user_profile.dart';
+  import 'package:provider/provider.dart';
+
 
   class ProfileScreen extends StatefulWidget {
     final UserProfile? user;
@@ -47,12 +52,19 @@
       selectedAvatar = u.avatar;
     }
 
+
     Future<void> showAvatarPicker(BuildContext context) async {
+      final localizationController = getLocalizationController(
+        context,
+        listen: false,
+      );
       await showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text("Choose Avatar"),
+            title: Text( localizationController.getTextValue(
+              "PROFILE_CHOOSE_AVATAR",
+            ),),
             content: SizedBox(
               height: 260,
               width: double.maxFinite,
@@ -83,7 +95,7 @@
                       ),
                       child: CircleAvatar(
                         backgroundImage:
-                        AssetImage("assets/avatars/a$avatarNo.png"),
+                        AssetImage("assets/avatars/a$avatarNo.jpg"),
                       ),
                     ),
                   );
@@ -112,6 +124,10 @@
     // }
 
     Future<void> showLanguagePicker(BuildContext context) async {
+      final localizationController = getLocalizationController(
+        context,
+        listen: false,
+      );
       final List<Map<String, String>> languages = [
         {"label": "English", "code": "en"},
         {"label": "Arabic", "code": "ar"},
@@ -123,7 +139,9 @@
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text("Select Language"),
+            title:  Text( localizationController.getTextValue(
+              "PROFILE_SELECT_LANGUAGE",
+            ),),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -151,7 +169,10 @@
       List<CurrencyModel> filtered = [];
 
       String? selectedCode = controller.text.isNotEmpty ? controller.text : null;
-
+      final localizationController = getLocalizationController(
+        context,
+        listen: false,
+      );
       await showDialog(
         context: context,
         barrierDismissible: true,
@@ -170,7 +191,9 @@
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16)),
-                title: const Text("Select Currency"),
+                title:  Text( localizationController.getTextValue(
+                  "PROFILE_SELECT_CURRENCY",
+                ),),
                 content: SizedBox(
                   width: double.maxFinite,
                   height: 450,
@@ -178,9 +201,11 @@
                     children: [
                       // SEARCH BOX
                       TextField(
-                        decoration: const InputDecoration(
+                        decoration:  InputDecoration(
                           prefixIcon: Icon(Icons.search),
-                          hintText: "Search currency...",
+                          hintText: localizationController.getTextValue(
+                            "PROFILE_SEARCH_CURRENCY",
+                          ),
                         ),
                         onChanged: (value) {
                           filtered = currencies
@@ -209,12 +234,27 @@
                               title: Text("${c.code} - ${c.name}"),
                               secondary: Text(c.symbol,
                                   style: const TextStyle(fontSize: 18)),
-                              onChanged: (value) {
-                                selectedCode = value;
-                                controller.text = value as String;
+                              onChanged: (value) async {
+                                final currencyProvider = context.read<CurrencyProvider>();
+
+                                selectedCode = value as String;
+                                controller.text = "${c.code} (${c.symbol})";
+
+                                await currencyProvider.setCurrency(
+                                  code: c.code,
+                                  symbol: c.symbol,
+                                );
+
                                 Navigator.pop(context);
                                 setState(() {});
                               },
+
+                              // onChanged: (value) {
+                              //   selectedCode = value;
+                              //   controller.text = value as String;
+                              //   Navigator.pop(context);
+                              //   setState(() {});
+                              // },
                             );
                           },
                         ),
@@ -309,6 +349,10 @@
 
 
     Widget _buildFormCard(BuildContext context) {
+      final localizationController = getLocalizationController(
+        context,
+        listen: false,
+      );
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.all(16),
@@ -325,18 +369,36 @@
         ),
         child: Column(
           children: [
-            _buildInput("First Name", firstNameCtrl),
-            _buildInput("Last Name", lastNameCtrl),
-            _buildInput("Email", emailCtrl, enabled: false),
-            _buildInput("Time Zone", timeZoneCtrl,enabled: false),
+            _buildInput(localizationController.getTextValue(
+              "PROFILE_FIRST_NAME",
+            ), firstNameCtrl),
+            _buildInput(localizationController.getTextValue(
+              "PROFILE_LAST_NAME",
+            ), lastNameCtrl),
+            _buildInput(localizationController.getTextValue(
+              "PROFILE_EMAIL",
+            ), emailCtrl, enabled: false),
+            _buildInput(localizationController.getTextValue(
+              "PROFILE_TIME_ZONE",
+            ), timeZoneCtrl,enabled: false),
             _buildInput(
-              "Language",
+              localizationController.getTextValue(
+                "PROFILE_LANGUAGE",
+              ),
               languageCtrl,
-              onTap: () => showLanguagePicker(context),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SelectLanguage()),
+                );
+              },
             ),
 
             _buildInput(
-              "Currency",
+              localizationController.getTextValue(
+                "PROFILE_CURRENCY",
+              ),
               currencyCtrl,
               onTap: () => showCurrencyPicker(context, currencyCtrl),
             ),
@@ -388,6 +450,9 @@
     }
 
     Widget _buildSaveButton() {
+      final localizationController =
+      getLocalizationController(context, listen: false);
+
       return SizedBox(
         width: double.infinity,
         child: ElevatedButton(
@@ -399,47 +464,21 @@
             ),
           ),
           onPressed: () async {
+            final settingsController =
+            context.read<SettingsController>(); // ✅ IMPORTANT
+
             final body = <String, dynamic>{};
 
-            // FIRST NAME
             if (firstNameCtrl.text.trim() != widget.user!.firstName) {
               body["first_name"] = firstNameCtrl.text.trim();
             }
 
-            // LAST NAME
             if (lastNameCtrl.text.trim() != widget.user!.lastName) {
               body["last_name"] = lastNameCtrl.text.trim();
             }
 
-            // LANGUAGE (convert labels to API code)
-            final langInput = languageCtrl.text.trim().toLowerCase();
-
-            final validLang = {
-              "en": "en",
-              "english": "en",
-
-              "ar": "ar",
-              "arabic": "ar",
-
-              "ja": "ja",
-              "japanese": "ja",
-            };
-
-
-            final input = languageCtrl.text.trim().toLowerCase();
-            final langCode = validLang[input] ?? input;
-
-            // final langCode = validLang[langInput] ?? langInput;
-
-            if (langCode != widget.user!.preferredLanguage) {
-              body["preferred_language"] = "en";
-            }
-
-
-            // CURRENCY — extract only code
-            final selectedCurrencyText = currencyCtrl.text.trim();
-            final code = RegExp(r'^[A-Z]{3}').stringMatch(selectedCurrencyText);
-
+            final code =
+            RegExp(r'^[A-Z]{3}').stringMatch(currencyCtrl.text.trim());
             if (code != null && code != widget.user!.currencyCode) {
               body["currency"] = code;
             }
@@ -450,78 +489,65 @@
 
             if (body.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("No changes to update")),
+                SnackBar(
+                  content: Text(
+                    localizationController.getTextValue("PROFILE_NO_CHANGES"),
+                  ),
+                ),
               );
               return;
             }
 
             final ok = await settingsController.updateUserProfile(body);
 
+            if (!context.mounted) return;
+
             if (ok) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Profile updated successfully")),
+              // 🔥 REFRESH PROFILE DATA
+              await settingsController.fetchUserProfile();
+
+              final currencyProvider = context.read<CurrencyProvider>();
+              final updatedUser = settingsController.userProfile!;
+
+              await currencyProvider.setCurrency(
+                code: updatedUser.currencyCode,
+                symbol: updatedUser.currencySymbol,
               );
-              Navigator.pop(context, true);
+
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    localizationController.getTextValue(
+                      "PROFILE_UPDATE_SUCCESS",
+                    ),
+                  ),
+                ),
+              );
+
+              Navigator.pop(context, true); // ✅ return success
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Update failed")),
+                SnackBar(
+                  content: Text(
+                    localizationController.getTextValue(
+                      "PROFILE_UPDATE_FAILED",
+                    ),
+                  ),
+                ),
               );
             }
           },
-
-          // onPressed: () async {
-          //   // final body = <String, dynamic>{};
-          //   // final body = <String, dynamic>{};
-          //
-          //   // if (firstNameCtrl.text.trim() != widget.user!.firstName) {
-          //   //   body["first_name"] = firstNameCtrl.text.trim();
-          //   // }
-          //   // if (lastNameCtrl.text.trim() != widget.user!.lastName) {
-          //   //   body["last_name"] = lastNameCtrl.text.trim();
-          //   // }
-          //   // if (languageCtrl.text.trim() != widget.user!.preferredLanguage) {
-          //   //   body["preferred_language"] = languageCtrl.text.trim();
-          //   // }
-          //   // if (currencyCtrl.text.trim() != "${widget.user!.currencyCode} (${widget.user!.currencySymbol})") {
-          //   //   body["currency"] = currencyCtrl.text.split(" ").first;
-          //   // }
-          //
-          //   // if (body.isEmpty) {
-          //   //   ScaffoldMessenger.of(context).showSnackBar(
-          //   //     const SnackBar(content: Text("No changes to update")),
-          //   //   );
-          //   //   return;
-          //   // }
-          //
-          //   final body = {
-          //     "first_name": "KURI",
-          //     "last_name": "HARAN",
-          //     "preferred_language": "en",
-          //     "currency": "AED",
-          //     "avatar": 1,
-          //   };
-          //
-          //   final ok = await settingsController.updateUserProfile(body);
-          //
-          //
-          //   if (ok) {
-          //     ScaffoldMessenger.of(context).showSnackBar(
-          //       const SnackBar(content: Text("Profile updated successfully")),
-          //     );
-          //     Navigator.pop(context, true);
-          //   } else {
-          //     ScaffoldMessenger.of(context).showSnackBar(
-          //       const SnackBar(content: Text("Update failed")),
-          //     );
-          //   }
-          // },
-
-
-          child: const Text(
-            "Save Changes",
-            style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+          child: Text(
+            localizationController.getTextValue("PROFILE_SAVE_CHANGES"),
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       );
     }
+
   }
