@@ -88,7 +88,10 @@ class CategoryController with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("access_token");
-      if (token == null) return;
+      if (token == null) {
+        categories = [];
+        return;
+      }
 
       final response = await http.get(
         Uri.parse(baseUrl),
@@ -101,6 +104,7 @@ class CategoryController with ChangeNotifier {
       }
     } catch (e) {
       debugPrint("Error fetching categories: $e");
+      categories = [];
     } finally {
       _setLoading(false);
     }

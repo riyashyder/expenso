@@ -1,6 +1,7 @@
   import 'package:expense_tracker/features/settings/view/select_language.dart';
 import 'package:flutter/material.dart';
-  import '../../../utils/devices/get_localization_provider.dart';
+  import '../../../core/localization/app_localization_controller.dart';
+import '../../../utils/devices/get_localization_provider.dart';
 import '../controller/currency_provider.dart';
 import '../controller/settings_controller.dart';
   import '../model/user_profile.dart';
@@ -27,6 +28,20 @@ import '../controller/settings_controller.dart';
     int selectedAvatar = 1;
 
 
+    String languageLabel(String code) {
+      switch (code) {
+        case 'en':
+          return 'English';
+        case 'ja':
+          return 'Japanese';
+        case 'ar':
+          return 'Arabic';
+        default:
+          return code;
+      }
+    }
+
+
     @override
     void initState() {
       super.initState();
@@ -49,7 +64,17 @@ import '../controller/settings_controller.dart';
       timeZoneCtrl = TextEditingController(text: u.timeZone);
       languageCtrl = TextEditingController(text: u.preferredLanguage);
       currencyCtrl = TextEditingController(text: "${u.currencyCode} (${u.currencySymbol})");
-      selectedAvatar = u.avatar;
+      selectedAvatar = u.avatar ?? 1;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final langProvider =
+        context.read<AppLocalizationController>();
+
+        setState(() {
+          languageCtrl.text = languageLabel(langProvider.appLanguage);
+        });
+      });
+
     }
 
 
@@ -299,7 +324,6 @@ import '../controller/settings_controller.dart';
     Widget _buildHeader(UserProfile user) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 40),
-        // padding: const EdgeInsets.all(30),
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -313,21 +337,30 @@ import '../controller/settings_controller.dart';
           children: [
             GestureDetector(
               onTap: () => showAvatarPicker(context),
-              child: CircleAvatar(
-                radius: 42,
-                backgroundColor: Colors.white,
-                backgroundImage:
-                AssetImage("assets/avatars/a$selectedAvatar.jpg")
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CircleAvatar(
+                    radius: 42,
+                    backgroundColor: Colors.white,
+                    backgroundImage: AssetImage("assets/avatars/a$selectedAvatar.jpg"),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    padding: const EdgeInsets.all(4),
+                    child: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                      size: 12,
+                    ),
+                  ),
+                ],
               ),
             ),
-            // CircleAvatar(
-            //   radius: 42,
-            //   backgroundColor: Colors.white,
-            //   child: Text(
-            //     user.firstName[0],
-            //     style: const TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
-            //   ),
-            // ),
             const SizedBox(height: 10),
             Text(
               "${user.firstName} ${user.lastName}",
@@ -346,6 +379,56 @@ import '../controller/settings_controller.dart';
       );
     }
 
+    // Widget _buildHeader(UserProfile user) {
+    //   return Container(
+    //     padding: const EdgeInsets.symmetric(vertical: 40),
+    //     // padding: const EdgeInsets.all(30),
+    //     width: double.infinity,
+    //     decoration: const BoxDecoration(
+    //       gradient: LinearGradient(
+    //         colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
+    //         begin: Alignment.topLeft,
+    //         end: Alignment.bottomRight,
+    //       ),
+    //       borderRadius: BorderRadius.vertical(bottom: Radius.circular(26)),
+    //     ),
+    //     child: Column(
+    //       children: [
+    //         GestureDetector(
+    //           onTap: () => showAvatarPicker(context),
+    //           child: CircleAvatar(
+    //             radius: 42,
+    //             backgroundColor: Colors.white,
+    //             backgroundImage:
+    //             AssetImage("assets/avatars/a$selectedAvatar.jpg")
+    //           ),
+    //         ),
+    //         // CircleAvatar(
+    //         //   radius: 42,
+    //         //   backgroundColor: Colors.white,
+    //         //   child: Text(
+    //         //     user.firstName[0],
+    //         //     style: const TextStyle(fontSize: 34, fontWeight: FontWeight.bold),
+    //         //   ),
+    //         // ),
+    //         const SizedBox(height: 10),
+    //         Text(
+    //           "${user.firstName} ${user.lastName}",
+    //           style: const TextStyle(
+    //             color: Colors.white,
+    //             fontSize: 20,
+    //             fontWeight: FontWeight.w600,
+    //           ),
+    //         ),
+    //         Text(
+    //           user.email,
+    //           style: const TextStyle(color: Colors.white70),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
+    //
 
 
     Widget _buildFormCard(BuildContext context) {
@@ -382,18 +465,53 @@ import '../controller/settings_controller.dart';
               "PROFILE_TIME_ZONE",
             ), timeZoneCtrl,enabled: false),
             _buildInput(
-              localizationController.getTextValue(
-                "PROFILE_LANGUAGE",
-              ),
+              localizationController.getTextValue("PROFILE_LANGUAGE"),
               languageCtrl,
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                final selectedLang = await Navigator.push<String>(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const SelectLanguage()),
+                  MaterialPageRoute(builder: (_) => const SelectLanguage()),
                 );
+
+                if (selectedLang != null) {
+                  setState(() {
+                    languageCtrl.text = selectedLang; //  updates UI
+                  });
+                }
               },
             ),
+
+            // _buildInput(
+            //   localizationController.getTextValue("PROFILE_LANGUAGE"),
+            //   languageCtrl,
+            //   onTap: () async {
+            //     // Navigate and wait for selected language
+            //     final selectedLanguage = await Navigator.push<String>(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => const SelectLanguage()),
+            //     );
+            //
+            //     if (selectedLanguage != null) {
+            //       setState(() {
+            //         languageCtrl.text = selectedLanguage;
+            //       });
+            //     }
+            //   },
+            // ),
+
+            // _buildInput(
+            //   localizationController.getTextValue(
+            //     "PROFILE_LANGUAGE",
+            //   ),
+            //   languageCtrl,
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => const SelectLanguage()),
+            //     );
+            //   },
+            // ),
 
             _buildInput(
               localizationController.getTextValue(

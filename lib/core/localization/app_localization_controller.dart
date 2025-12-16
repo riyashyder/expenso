@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppLocalizationController extends ChangeNotifier {
+  static const String _langKey = "app_language";
   static String currentAppLanguage = "en";
 
   static const Map<String, dynamic> _data = {
@@ -128,6 +129,11 @@ class AppLocalizationController extends ChangeNotifier {
         "jp": "続行すると、利用規約およびプライバシーポリシーに同意したものとみなされます。"
       },
 
+    "OTP_SENT_SUCCESS": {
+      "en": "OTP sent successfully",
+      "ar": "تم إرسال رمز التحقق بنجاح",
+      "jp": "OTPが正常に送信されました"
+    },
 
     "EXPENSO_HEADER": {
       "en": "Welcome back! \n\nYour financial journey continues. Log in to see your progress and stay on top of your goals.!",
@@ -450,12 +456,12 @@ class AppLocalizationController extends ChangeNotifier {
     "SELECT_CATEGORY": {
       "en": "Select a category",
       "ar": "اختر فئة",
-      "ja": "カテゴリを選択"
+      "jp": "カテゴリを選択"
     },
     "LOADING_CATEGORIES": {
       "en": "Loading categories…",
       "ar": "جارٍ تحميل الفئات…",
-      "ja": "カテゴリを読み込み中…"
+      "jp": "カテゴリを読み込み中…"
     },
     "TRANS_TRANSACTION_TYPE": {
       "en": "Transaction Type",
@@ -577,6 +583,41 @@ class AppLocalizationController extends ChangeNotifier {
       "ar": "الخصوصية",
       "jp": "プライバシー"
     },
+
+
+      "NOTIFICATIONS_TITLE": {
+        "en": "Notifications",
+        "ar": "الإشعارات",
+        "jp": "通知"
+      },
+
+      "NO_NOTIFICATIONS_TITLE": {
+        "en": "You're all caught up!",
+        "ar": "أنت على اطلاع كامل!",
+        "jp": "すべて確認済みです！"
+      },
+
+      "NO_NOTIFICATIONS_SUBTITLE": {
+        "en": "No new notifications",
+        "ar": "لا توجد إشعارات جديدة",
+        "jp": "新しい通知はありません"
+      },
+
+      "DELETE": {
+        "en": "Delete",
+        "ar": "حذف",
+        "jp": "削除"
+      },
+
+      "LOADING": {
+        "en": "Loading...",
+        "ar": "جارٍ التحميل...",
+        "jp": "読み込み中..."
+      },
+
+
+
+
 
     "CONFIRM_LOGOUT": {
       "en": "Confirm Logout",
@@ -949,26 +990,53 @@ class AppLocalizationController extends ChangeNotifier {
     "HOME": {"en": "Home", "ar": "الصفحة الرئيسية"},
     "RAFFLE": {"en": "Raffle", "ar": "السحب"},
     "MENU": {"en": "Menu", "ar": "القائمة"},
-    "OTP_CONFIRM_LABEL": {"en": "Confirmation", "ar": "تأكيد"},
+    "OTP_CONFIRM_LABEL": {
+      "en": "Confirmation",
+      "ar": "تأكيد",
+      "jp": "確認"
+    },
+
     "OTP_SUB_HEADER_LABEL": {
       "en": "Enter the Verification Code sent to",
       "ar": "أدخل رمز التحقق المرسل إليه",
+      "jp": "送信された確認コードを入力してください"
     },
+
     "OTP_WITHIN_LABEL": {
       "en": "Please enter the OTP within ",
       "ar": "الرجاء إدخال كلمة مرور لمرة واحدة في الداخل ",
+      "jp": "OTPを次の時間内に入力してください："
     },
+
     "DID_NT_RECEIVE_CODE": {
       "en": "Didn't receive the code yet?",
       "ar": "لم تستلم الرمز بعد؟",
+      "jp": "コードをまだ受け取っていませんか？"
     },
+
     "RESENT_OTP": {
       "en": "Resend OTP",
       "ar": "إعادة إرسال كلمة المرور لمرة واحدة",
+      "jp": "OTPを再送信"
     },
-    "RESENT_VERIFYING": {"en": "Verifying...", "ar": "جارٍ التحقق..."},
-    "RESENT_VERIFY": {"en": "verify", "ar": "يؤكد"},
-    "FORGOT_PASS": {"en": "Forgot Password?", "ar": "هل نسيت كلمة السر؟"},
+
+    "RESENT_VERIFYING": {
+      "en": "Verifying...",
+      "ar": "جارٍ التحقق...",
+      "jp": "確認中..."
+    },
+
+    "RESENT_VERIFY": {
+      "en": "verify",
+      "ar": "يؤكد",
+      "jp": "確認"
+    },
+
+    "FORGOT_PASS": {
+      "en": "Forgot Password?",
+      "ar": "هل نسيت كلمة السر؟",
+      "jp": "パスワードをお忘れですか？"
+    },
     "PASSWORD_ERROR": {
       "en": "Password cannot be empty",
       "ar": "لا يمكن أن تكون كلمة المرور فارغة",
@@ -989,19 +1057,32 @@ class AppLocalizationController extends ChangeNotifier {
     "FORGOT_PASSWORD_ERROR": {
       "en": "Please enter a valid email",
       "ar": "الرجاء إدخال بريد إلكتروني صالح",
+      "jp": "有効なメールアドレスを入力してください"
     },
+
     "FORGOT_PASS_SUB_HEADER": {
-      "en":
-      "Enter your registered email address. We'll send you a code to help you regain the access.",
-      "ar":
-      "أدخل عنوان بريدك الإلكتروني المسجل. سنرسل إليك رمزًا لمساعدتك في استعادة إمكانية الوصول.",
+      "en": "Enter your registered email address. We'll send you a code to help you regain the access.",
+      "ar": "أدخل عنوان بريدك الإلكتروني المسجل. سنرسل إليك رمزًا لمساعدتك في استعادة إمكانية الوصول.",
+      "jp": "登録済みのメールアドレスを入力してください。アクセスを回復するためのコードをお送りします。"
     },
+
     "FORGOT_PASSWORD_LABEL": {
       "en": "Registered Email ID",
       "ar": "معرف البريد الإلكتروني المسجل",
+      "jp": "登録済みメールアドレス"
     },
-    "LOADING_LABEL": {"en": "Loading...", "ar": "تحميل"},
-    "CONTINUE_LABEL": {"en": "Continue", "ar": "يكمل"},
+
+    "LOADING_LABEL": {
+      "en": "Loading...",
+      "ar": "تحميل",
+      "jp": "読み込み中..."
+    },
+
+    "CONTINUE_LABEL": {
+      "en": "Continue",
+      "ar": "يكمل",
+      "jp": "続行"
+    },
     "MISSING_OTP_TIME": {
       "en": "OTP validity time is missing.",
       "ar": "وقت صلاحية OTP مفقود.",
@@ -1016,11 +1097,115 @@ class AppLocalizationController extends ChangeNotifier {
       "ar": "يجب أن تكون كلمة المرور الجديدة مختلفة عن تلك المستخدمة سابقًا.",
     },
     "PASSWORD_LABEL": {"en": "Password", "ar": "كلمة المرور"},
+    // "CONFIRM_PASSWORD_LABEL": {
+    //   "en": "Confirm Password",
+    //   "ar": "تأكيد كلمة المرور",
+    //   "jp": "パスワードを確認"
+    // },
+
+    "EXPENSO_TITLE": {
+      "en": "EXPENSO",
+      "jp": "エクスペンソ"
+    },
+    "SET_NEW_PASSWORD_TITLE": {
+      "en": "Set New Password",
+      "jp": "新しいパスワードを設定"
+    },
+    "SET_NEW_PASSWORD_SUBTITLE": {
+      "en": "Create a strong password to secure your account",
+      "jp": "アカウントを保護するために強力なパスワードを作成してください"
+    },
+    "EMAIL_LABEL": {
+      "en": "Email",
+      "jp": "メール"
+    },
+    "NEW_PASSWORD_LABEL": {
+      "en": "New Password",
+      "jp": "新しいパスワード"
+    },
+    "NEW_PASSWORD_HINT": {
+      "en": "Enter new password",
+      "jp": "新しいパスワードを入力してください"
+    },
     "CONFIRM_PASSWORD_LABEL": {
       "en": "Confirm Password",
-      "ar": "تأكيد كلمة المرور",
       "jp": "パスワードを確認"
     },
+    "CONFIRM_PASSWORD_HINT": {
+      "en": "Re-enter password",
+      "jp": "パスワードを再入力してください"
+    },
+    "PASSWORD_REQUIRED_ERROR": {
+      "en": "Password is required",
+      "jp": "パスワードは必須です"
+    },
+    "PASSWORD_MIN_LENGTH_ERROR": {
+      "en": "Password must be at least 6 characters",
+      "jp": "パスワードは6文字以上である必要があります"
+    },
+    "PASSWORD_MISMATCH_ERROR": {
+      "en": "Passwords do not match",
+      "jp": "パスワードが一致しません"
+    },
+    "ALL_FIELDS_REQUIRED_SNACKBAR": {
+      "en": "All fields are required",
+      "jp": "すべての項目を入力してください"
+    },
+    "PASSWORDS_DO_NOT_MATCH_SNACKBAR": {
+      "en": "Passwords do not match",
+      "jp": "パスワードが一致しません"
+    },
+    "PASSWORD_UPDATED_SUCCESS": {
+      "en": "Password updated successfully",
+      "jp": "パスワードが正常に更新されました"
+    },
+    "PASSWORD_UPDATE_FAILED": {
+      "en": "Failed to reset password",
+      "jp": "パスワードのリセットに失敗しました"
+    },
+    "CONFIRM_PASSWORD_REQUIRED_ERROR": {
+      "en": "Confirm password is required",
+      "jp": "パスワード確認は必須です"
+    },
+    "ERROR_GENERIC": {
+      "en": "Error: ",
+      "jp": "エラー: "
+    },
+    "PLEASE_WAIT_LABEL": {
+      "en": "Please wait...",
+      "jp": "お待ちください..."
+    },
+    "DONE_BUTTON_LABEL": {
+      "en": "Done",
+      "jp": "完了"
+    },
+
+    "DASHBOARD_NAV_LABEL": {
+      "en": "Dashboard",
+      "jp": "ダッシュボード"
+    },
+    "TRANSACTIONS_NAV_LABEL": {
+      "en": "Transactions",
+      "jp": "取引"
+    },
+    "CATEGORY_NAV_LABEL": {
+      "en": "Category",
+      "jp": "カテゴリ"
+    },
+    "SETTINGS_NAV_LABEL": {
+      "en": "Settings",
+      "jp": "設定"
+    },
+    "NO_CONNECTIVITY_MESSAGE": {
+      "en": "No Internet Connection",
+      "jp": "インターネット接続がありません"
+    },
+
+    "NO_DATA": {
+      "en": "No data available",
+      "jp": "データがありません"
+    },
+
     "CONFIRM_PASSWORD_SUBMITTING": {"en": "Submitting", "ar": "تقديم"},
     "CONFIRM_PASSWORD_SUBMIT": {"en": "Submit", "ar": "يُقدِّم"},
     "PASSWORD_SUCCESS_HEADER": {
@@ -1369,7 +1554,7 @@ class AppLocalizationController extends ChangeNotifier {
     "ONBOARD": {"en": "Onboard", "ar": "إلحاق"},
     "TOTAL_PURCHASE": {"en": "Total Purchase", "ar": "إجمالي المشتريات"},
     "ONBOARD_DATE": {"en": "Onboard Date", "ar": "تاريخ الالتحاق"},
-    "DELETE": {"en": "Delete", "ar": "حذف"},
+    // "DELETE": {"en": "Delete", "ar": "حذف"},
     "TEAM_EDIT": {"en": "Edit Team", "ar": "تحرير الفريق"},
     "CASHIER_ONBOARDING": {"en": "Cashier Onboarding", "ar": "تسجيل الصراف"},
     "SALES_ADMIN_ONBOARD": {
@@ -1400,7 +1585,20 @@ class AppLocalizationController extends ChangeNotifier {
       "ar": "ثواني. لم تستلم؟",
     },
     "RESEND": {"en": "Resend", "ar": "إعادة الإرسال"},
-    "NO_DATA": {"en": "No Data", "ar": "لا توجد بيانات"},
+    // "NO_DATA": {"en": "No Data", "ar": "لا توجد بيانات"},
+    "TRANS_NO_DATA": {
+      "en": "No transactions available",
+      "jp": "利用可能な取引はありません"
+    },
+    "SELECT_LANGUAGE": {
+      "en": "Select Language",
+      "jp": "言語を選択"
+    },
+
+    "NO_CATEGORIES": {
+      "en": "No categories available",
+      "jp": "利用可能なカテゴリはありません"
+    },
     "MIN_PURCHASE": {"en": "Min Purchase", "ar": "الحد الأدنى للشراء"},
     "MAX_PURCHASE": {"en": "Max Purchase", "ar": "الحد الأقصى للشراء"},
     "MIN_PURCHASEE": {"en": "Min Purchase", "ar": "الحد الأدنى للشراء"},

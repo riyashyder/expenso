@@ -12,6 +12,12 @@ class TransactionsController extends ChangeNotifier {
   double totalExpense = 0;
   double netTotal = 0;
 
+  bool _hasLoadedOnce = false;
+  bool _isLocalLoading = false;
+
+  bool get isScreenLoading => _isLocalLoading || !_hasLoadedOnce;
+
+
   bool get isLoading => apiController.isLoading;
 
   void changeFilter(String filter) {
@@ -31,6 +37,9 @@ class TransactionsController extends ChangeNotifier {
   }
 
   Future<void> fetchTransactions({String? from, String? to}) async {
+    _isLocalLoading = true;
+    notifyListeners();
+
     final result = await apiController.fetchTransactions(
       from: from ?? "", // send empty string if not provided
       to: to ?? "",
@@ -58,10 +67,14 @@ class TransactionsController extends ChangeNotifier {
               : Icons.arrow_upward,
         );
       }).toList();
-      notifyListeners();
+      // notifyListeners();
     } else {
       debugPrint("Fetch failed: ${result['message']}");
+      transactions = [];
     }
+    _isLocalLoading = false;
+    _hasLoadedOnce = true;
+    notifyListeners();
   }
 
   Future<void> createTransaction({

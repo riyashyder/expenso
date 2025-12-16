@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrencyProvider extends ChangeNotifier {
-  String _currencyCode = 'USD';
-  String _currencySymbol = '\$';
+  String _currencyCode = 'JPY';
+  String _currencySymbol = '\¥';
 
   String get code => _currencyCode;
   String get symbol => _currencySymbol;
@@ -11,8 +11,16 @@ class CurrencyProvider extends ChangeNotifier {
   /// Load saved currency on app start
   Future<void> loadCurrency() async {
     final prefs = await SharedPreferences.getInstance();
-    _currencyCode = prefs.getString('currency_code') ?? 'USD';
-    _currencySymbol = prefs.getString('currency_symbol') ?? '\$';
+    _currencyCode = prefs.getString('currency_code') ?? 'JPY';
+    _currencySymbol = prefs.getString('currency_symbol') ?? '\¥';
+    notifyListeners();
+  }
+
+  void reset() {
+    _currencyCode = 'JPY';
+    _currencySymbol = '\¥';
+    // _currencyCode = 'USD';
+    // _currencySymbol = '\$';
     notifyListeners();
   }
 

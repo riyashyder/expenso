@@ -7,6 +7,8 @@ enum ReportType { week, month, year }
 class ReportsController extends ChangeNotifier {
   final DashboardApiService api = DashboardApiService();
 
+  bool isScreenReady = false;
+
   ReportType selected = ReportType.month;
 
   // NEW — chart type (expense or income)
@@ -28,6 +30,24 @@ class ReportsController extends ChangeNotifier {
 
   ReportsController() {
     loadReportData();
+  }
+
+  void reset() {
+    isScreenReady = false;
+    selected = ReportType.month;
+    selectedChartType = "expense";
+    _data = ReportData.empty();
+    dashboardCards = {
+      "totalIncome": 0.0,
+      "totalExpense": 0.0,
+      "thisMonthExpense": 0.0,
+    };
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> fetchDashboardData() async {
+    await loadReportData();
   }
 
   /// Ensure list is always fixed size (12 months)
@@ -127,6 +147,7 @@ class ReportsController extends ChangeNotifier {
         monthlyIncome: monthlyIncome,
         monthlyExpense: monthlyExpense,
       );
+      isScreenReady = true;
 
     } catch (e) {
       print("ERROR REPORT CONTROLLER: $e");

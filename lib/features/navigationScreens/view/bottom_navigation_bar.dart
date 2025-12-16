@@ -96,28 +96,28 @@ class _NavigationScreenState extends State<NavigatioScreen> {
                     children: [
                       _navItem(
                         icon: Icons.dashboard,
-                        label: "Dashboard",
+                        label: localizationController.getTextValue("DASHBOARD_NAV_LABEL"),
                         index: 0,
                         isActive: bottomNavProvider.selectedIndex == 0,
                         onTap: () => bottomNavProvider.setIndex(0),
                       ),
                       _navItem(
                         icon: Icons.swap_horiz,
-                        label: "Transactions",
+                        label: localizationController.getTextValue("TRANSACTIONS_NAV_LABEL"),
                         index: 1,
                         isActive: bottomNavProvider.selectedIndex == 1,
                         onTap: () => bottomNavProvider.setIndex(1),
                       ),
                       _navItem(
                         icon: Icons.monetization_on_sharp,
-                        label: "Category",
+                        label:  localizationController.getTextValue("CATEGORY_NAV_LABEL"),
                         index: 2,
                         isActive: bottomNavProvider.selectedIndex == 2,
                         onTap: () => bottomNavProvider.setIndex(2),
                       ),
                       _navItem(
                         icon: Icons.settings,
-                        label: "Settings",
+                        label: localizationController.getTextValue("SETTINGS_NAV_LABEL"),
                         index: 3,
                         isActive: bottomNavProvider.selectedIndex == 3,
                         onTap: () => bottomNavProvider.setIndex(3),

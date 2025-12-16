@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../features/exportData/view/export_screen.dart';
+import '../../features/notifications/controller/notification_provider.dart';
+import '../../features/notifications/view/notification_screen.dart';
 import '../../shared/widgets/custom_widgets/page_transition.dart';
 import '../../shared/widgets/styles/styles.dart';
 import '../../utils/devices/get_localization_provider.dart';
@@ -24,10 +26,8 @@ class _MainAppBarState extends State<MainAppBar> {
   @override
   void initState() {
     super.initState();
-    // Future.microtask(() {
-    //   Provider.of<Alertcontroller>(context, listen: false)
-    //       .getNotificationCount();
-    // });
+    final provider = Provider.of<NotificationProvider>(context, listen: false);
+    provider.loadUnreadCount();
   }
 
   @override
@@ -50,20 +50,20 @@ class _MainAppBarState extends State<MainAppBar> {
               //   width: 30,
               //   height: 30,
               // ),
-              Row(
-                children:  [
-                  Icon(Icons.receipt_long, color: AppThemeData.whiteColor,size: 28),
-                  SizedBox(width: 8),
-                  Text(
-                    localizationController.getTextValue("EXPENSO_APP_HEADER"),
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: AppThemeData.whiteColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                ],
-              ),
+                Row(
+                  children:  [
+                    Icon(Icons.receipt_long, color: AppThemeData.whiteColor,size: 28),
+                    SizedBox(width: 8),
+                    Text(
+                      localizationController.getTextValue("EXPENSO_APP_HEADER"),
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: AppThemeData.whiteColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  ],
+                ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -84,36 +84,77 @@ class _MainAppBarState extends State<MainAppBar> {
                   ),
                  SizedBox(width: 15),
                   GestureDetector(
-                      // onTap: () {
-                      //   Navigator.push(context, MaterialPageRoute(builder: (ctx) => const AlertScreen()));
-                      // },
-                      child: SizedBox(
-                          width: 25,
-                          height: 25,
-                          child: Stack(children: [
-                            SvgPicture.asset(ImageandLogos.notification_icon),
-                            // Align(
-                            //   alignment: Alignment.topRight,
-                            //   child: Consumer<Alertcontroller>(
-                            //     builder: (context, controller, child) {
-                            //       if (controller.isLoading) {
-                            //         const SizedBox();
-                            //       }
-                            //       return CircleAvatar(
-                            //         backgroundColor: Colors.red,
-                            //         radius: 8,
-                            //         child: Center(
-                            //           child: Text(
-                            //             controller.newAlertCount.toString(),
-                            //             style: const TextStyle(
-                            //                 color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
-                            //           ),
-                            //         ),
-                            //       );
-                            //     },
-                            //   ),
-                            // )
-                          ]))),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const NotificationScreen()),
+                      );
+                    },
+                    child: SizedBox(
+                      width: 25,
+                      height: 25,
+                      child: Stack(
+                        children: [
+                          SvgPicture.asset(ImageandLogos.notification_icon),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: Consumer<NotificationProvider>(
+                              builder: (context, provider, child) {
+                                if (provider.unreadCount == 0) return const SizedBox();
+
+                                return CircleAvatar(
+                                  radius: 7,
+                                  backgroundColor: Colors.red,
+                                  child: Text(
+                                    provider.unreadCount.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // GestureDetector(
+                  //     // onTap: () {
+                  //     //   Navigator.push(context, MaterialPageRoute(builder: (ctx) => const AlertScreen()));
+                  //     // },
+                  //     child: SizedBox(
+                  //         width: 25,
+                  //         height: 25,
+                  //         child: Stack(children: [
+                  //           SvgPicture.asset(ImageandLogos.notification_icon),
+                  //           // Align(
+                  //           //   alignment: Alignment.topRight,
+                  //           //   child: Consumer<Alertcontroller>(
+                  //           //     builder: (context, controller, child) {
+                  //           //       if (controller.isLoading) {
+                  //           //         const SizedBox();
+                  //           //       }
+                  //           //       return CircleAvatar(
+                  //           //         backgroundColor: Colors.red,
+                  //           //         radius: 8,
+                  //           //         child: Center(
+                  //           //           child: Text(
+                  //           //             controller.newAlertCount.toString(),
+                  //           //             style: const TextStyle(
+                  //           //                 color: Colors.white, fontSize: 7, fontWeight: FontWeight.bold),
+                  //           //           ),
+                  //           //         ),
+                  //           //       );
+                  //           //     },
+                  //           //   ),
+                  //           // )
+                  //         ]))),
                 SizedBox(width: 10,),
 
                   // GestureDetector(

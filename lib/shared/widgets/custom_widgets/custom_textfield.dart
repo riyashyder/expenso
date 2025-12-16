@@ -213,20 +213,40 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 fontSize: 10,
               ),
 
-              suffixIcon:
-              widget.showEyeIcon
-                  ? IconButton(
-                icon: Icon(
-                  obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey,
-                ),
-                onPressed: () {
+              suffixIcon: widget.showEyeIcon
+                  ? GestureDetector(
+                onTap: () {
                   setState(() {
                     obscureText = !obscureText;
                   });
                 },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0), // adjust padding as needed
+                  child: SvgPicture.asset(
+                    obscureText
+                        ? 'assets/icons/hide_password.svg' // eye closed
+                        : 'assets/icons/show_password.svg', // eye open
+                    width: 20,
+                    height: 20,
+                  ),
+                ),
               )
                   : null,
+
+              // suffixIcon:
+              // widget.showEyeIcon
+              //     ? IconButton(
+              //   icon: Icon(
+              //     obscureText ? Icons.visibility_off : Icons.visibility,
+              //     color: Colors.grey,
+              //   ),
+              //   onPressed: () {
+              //     setState(() {
+              //       obscureText = !obscureText;
+              //     });
+              //   },
+              // )
+              //     : null,
             ),
             onChanged: (value) {
               debugPrint("TextField changed: $value");

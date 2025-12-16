@@ -102,8 +102,8 @@ class CustomTextField extends StatelessWidget {
                       padding: const EdgeInsets.all(5.0),
                       child: SvgPicture.asset(
                         obscureText
-                            ? 'assets/svg/hide_password.svg' // Eye closed SVG
-                            : 'assets/svg/show_password.svg', // Eye open SVG
+                            ? 'assets/icons/hide_password.svg' // Eye closed SVG
+                            : 'assets/icons/show_password.svg', // Eye open SVG
                       ),
                     ),
                     // child: Icon(

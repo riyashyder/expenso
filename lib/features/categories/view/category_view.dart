@@ -42,8 +42,33 @@ class _CategoriesViewState extends State<CategoriesView> {
           return Scaffold(
             backgroundColor: Colors.white,
             // appBar: AppBar(title: const Text("Categories")),
-            body: ctrl.categories.isEmpty
-                ? const Center(child: CircularProgressIndicator())
+            body: ctrl.isLoading
+                ? const Center(
+              child: CircularProgressIndicator(),
+            )
+                :  ctrl.categories.isEmpty
+                ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.category_outlined,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    localizationController.getTextValue("NO_CATEGORIES"), // Add this key in your localization
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            )
+
                 : ListView.builder(
                  padding: const EdgeInsets.all(16),
                  itemCount: ctrl.categories.length,

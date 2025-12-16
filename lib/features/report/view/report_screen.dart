@@ -41,8 +41,7 @@ class ReportsScreen extends StatelessWidget {
       Colors.indigo,
     ];
 
-    Color getCategoryColor(int index) =>
-        pieColors[index % pieColors.length];
+    Color getCategoryColor(int index) => pieColors[index % pieColors.length];
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -58,9 +57,9 @@ class ReportsScreen extends StatelessWidget {
                 Expanded(
                   child: _dateBox(
                     "${localizationController.getTextValue(
-        "REPORTS_FROM",
-        )} ${controller.startDateString}",
-                        () => controller.pickStartDate(context),
+                      "REPORTS_FROM",
+                    )} ${controller.startDateString}",
+                    () => controller.pickStartDate(context),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -69,7 +68,7 @@ class ReportsScreen extends StatelessWidget {
                     "${localizationController.getTextValue(
                       "REPORTS_TO",
                     )} ${controller.endDateString}",
-                        () => controller.pickEndDate(context),
+                    () => controller.pickEndDate(context),
                   ),
                 ),
               ],
@@ -86,7 +85,8 @@ class ReportsScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _valueCard(
-                      title: localizationController.getTextValue("TOTAL_INCOME"),
+                      title:
+                          localizationController.getTextValue("TOTAL_INCOME"),
                       value: controller.dashboardCards["totalIncome"],
                       color: Colors.green,
                       symbol: symbol,
@@ -95,7 +95,8 @@ class ReportsScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _valueCard(
-                      title: localizationController.getTextValue("TOTAL_EXPENSE"),
+                      title:
+                          localizationController.getTextValue("TOTAL_EXPENSE"),
                       value: controller.dashboardCards["totalExpense"],
                       color: Colors.red,
                       symbol: symbol,
@@ -104,7 +105,8 @@ class ReportsScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: _valueCard(
-                      title: localizationController.getTextValue("THIS_MONTH_REPORT"),
+                      title: localizationController
+                          .getTextValue("THIS_MONTH_REPORT"),
                       value: controller.dashboardCards["thisMonthExpense"],
                       color: Colors.blue,
                       symbol: symbol,
@@ -113,7 +115,6 @@ class ReportsScreen extends StatelessWidget {
                 ],
               ),
             ),
-
 
             // const SizedBox(height: 20),
             //
@@ -137,13 +138,19 @@ class ReportsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildChartTypeToggle(localizationController.getTextValue(
-                  "EXPENSE",
-                ), "expense", controller),
+                _buildChartTypeToggle(
+                    localizationController.getTextValue(
+                      "EXPENSE",
+                    ),
+                    "expense",
+                    controller),
                 const SizedBox(width: 12),
-                _buildChartTypeToggle(localizationController.getTextValue(
-                  "INCOME",
-                ), "income", controller),
+                _buildChartTypeToggle(
+                    localizationController.getTextValue(
+                      "INCOME",
+                    ),
+                    "income",
+                    controller),
               ],
             ),
 
@@ -153,59 +160,87 @@ class ReportsScreen extends StatelessWidget {
             /// PIE CHART — BREAKDOWN
             /// -----------------------------------
             _buildCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${controller.selectedChartType == 'expense' ? '${localizationController.getTextValue(
-                      "EXPENSE",
-                    )}' : '${localizationController.getTextValue(
-                      "INCOME",
-                    )}'} Breakdown",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 12),
-
-                  SizedBox(
-                    height: 160,
-                    child: PieChart(
-                      PieChartData(
-                        centerSpaceRadius: 40,
-                        sections: [
-                          for (int i = 0; i < data.breakdown.length; i++)
-                            PieChartSectionData(
-                              title: "",
-                              value: data.breakdown.values.elementAt(i),
-                              color: getCategoryColor(i),
-                              radius: 50,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 35),
-
-                  Wrap(
-                    spacing: 12,
-                    children: [
-                      for (int i = 0; i < data.breakdown.length; i++)
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CircleAvatar(
-                              radius: 6,
-                              backgroundColor: getCategoryColor(i),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(data.breakdown.keys.elementAt(i)),
-                          ],
+              child: data.breakdown.isEmpty
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${controller.selectedChartType == 'expense' ? '${localizationController.getTextValue(
+                              "EXPENSE",
+                            )}' : '${localizationController.getTextValue(
+                              "INCOME",
+                            )}'} Breakdown",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                    ],
-                  )
-                ],
-              ),
+                        const SizedBox(height: 12),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Text(
+                              localizationController.getTextValue("NO_DATA"),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${controller.selectedChartType == 'expense' ? '${localizationController.getTextValue(
+                              "EXPENSE",
+                            )}' : '${localizationController.getTextValue(
+                              "INCOME",
+                            )}'} Breakdown",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        const SizedBox(height: 30),
+                        SizedBox(
+                          height: 160,
+                          child: PieChart(
+                            PieChartData(
+                              centerSpaceRadius: 40,
+                              sections: [
+                                for (int i = 0; i < data.breakdown.length; i++)
+                                  PieChartSectionData(
+                                    title: "",
+                                    value: data.breakdown.values.elementAt(i),
+                                    color: getCategoryColor(i),
+                                    radius: 50,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 35),
+                        Wrap(
+                          spacing: 12,
+                          children: [
+                            for (int i = 0; i < data.breakdown.length; i++)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 6,
+                                    backgroundColor: getCategoryColor(i),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(data.breakdown.keys.elementAt(i)),
+                                ],
+                              ),
+                          ],
+                        )
+                      ],
+                    ),
             ),
 
             const SizedBox(height: 20),
@@ -216,184 +251,399 @@ class ReportsScreen extends StatelessWidget {
             /// -----------------------------------
             /// MONTHLY EXPENSE (Bars)
             /// -----------------------------------
-    _buildCard(
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-     Text(
-    localizationController.getTextValue(
-      "MONTHLY_INCOME_EXPENSE",
-    ),
-    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-    ),
+            _buildCard(
+              child: (data.monthlyIncome.isEmpty &&
+                          data.monthlyExpense.isEmpty) ||
+                      (data.monthlyIncome.every((e) => e == 0) &&
+                          data.monthlyExpense.every((e) => e == 0))
+                  ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        localizationController
+                            .getTextValue("MONTHLY_INCOME_EXPENSE"),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 16),
+                      Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Text(
+                              localizationController.getTextValue("NO_DATA"),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          localizationController
+                              .getTextValue("MONTHLY_INCOME_EXPENSE"),
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 16),
 
-    const SizedBox(height: 16),
+                        /// ---------- TOTALS ROW ----------
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "${localizationController.getTextValue("TOTAL_INCOME_AMOUNT")} $symbol${data.monthlyIncome.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.green,
+                              ),
+                            ),
+                            Text(
+                              "${localizationController.getTextValue("TOTAL_EXPENSE_AMOUNT")} $symbol${data.monthlyExpense.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
 
-    /// ---------- TOTALS ROW ----------
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "${localizationController.getTextValue(
-    "TOTAL_INCOME_AMOUNT",
-    )} $symbol${data.monthlyIncome.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.green,
+                        /// ---------- MONTHLY BARS ----------
+                        Column(
+                          children: List.generate(12, (i) {
+                            final months = [
+                              "Jan",
+                              "Feb",
+                              "Mar",
+                              "Apr",
+                              "May",
+                              "Jun",
+                              "Jul",
+                              "Aug",
+                              "Sep",
+                              "Oct",
+                              "Nov",
+                              "Dec"
+                            ];
+
+                            final income = data.monthlyIncome[i];
+                            final expense = data.monthlyExpense[i];
+
+                            final maxValue = [
+                              ...data.monthlyIncome,
+                              ...data.monthlyExpense
+                            ].reduce((a, b) => a > b ? a : b);
+
+                            double incomePercent =
+                                maxValue == 0 ? 0 : income / maxValue;
+                            double expensePercent =
+                                maxValue == 0 ? 0 : expense / maxValue;
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  /// Month Title
+                                  Text(
+                                    months[i],
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  const SizedBox(height: 6),
+
+                                  /// ---------- INCOME BAR ----------
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 60,
+                                        child: Text(
+                                          localizationController
+                                              .getTextValue("LABEL_INCOME"),
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade300,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: FractionallySizedBox(
+                                            alignment: Alignment.centerLeft,
+                                            widthFactor: incomePercent,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      SizedBox(
+                                        width: 60,
+                                        child: Text(
+                                          "$symbol${income.toStringAsFixed(0)}",
+                                          textAlign: TextAlign.right,
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 6),
+
+                                  /// ---------- EXPENSE BAR ----------
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 60,
+                                        child: Text(
+                                          localizationController
+                                              .getTextValue("LABEL_EXPENSE"),
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade300,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: FractionallySizedBox(
+                                            alignment: Alignment.centerLeft,
+                                            widthFactor: expensePercent,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      SizedBox(
+                                        width: 60,
+                                        child: Text(
+                                          "$symbol${expense.toStringAsFixed(0)}",
+                                          textAlign: TextAlign.right,
+                                          style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    ),
             ),
-          ),
-          Text(
-            "${localizationController.getTextValue(
-    "TOTAL_EXPENSE_AMOUNT",
-    )} $symbol${data.monthlyExpense.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Colors.red,
-            ),
-          ),
-        ],
-      ),
 
-
-      const SizedBox(height: 16),
-    /// ---------------------------------
-
-    Column(
-    children: List.generate(12, (i) {
-    final months = [
-    "Jan","Feb","Mar","Apr","May","Jun",
-    "Jul","Aug","Sep","Oct","Nov","Dec"
-    ];
-
-    final income = data.monthlyIncome[i];
-    final expense = data.monthlyExpense[i];
-
-    // Find the max for scaling bars
-    final maxValue = [
-    ...data.monthlyIncome,
-    ...data.monthlyExpense
-    ].reduce((a, b) => a > b ? a : b);
-
-    double incomePercent = maxValue == 0 ? 0 : income / maxValue;
-    double expensePercent = maxValue == 0 ? 0 : expense / maxValue;
-
-    return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    /// Month Title
-    Text(
-    months[i],
-    style: const TextStyle(
-    fontSize: 14, fontWeight: FontWeight.w600),
-    ),
-    const SizedBox(height: 6),
-
-    /// ---------- INCOME BAR ----------
-    Row(
-    children: [
-     SizedBox(
-    width: 60,
-    child: Text(
-    "${localizationController.getTextValue(
-      "LABEL_INCOME",
-    )}",
-    style: TextStyle(
-    fontSize: 12, fontWeight: FontWeight.w500),
-    ),
-    ),
-    Expanded(
-    child: Container(
-    height: 10,
-    decoration: BoxDecoration(
-    color: Colors.grey.shade300,
-    borderRadius: BorderRadius.circular(20),
-    ),
-    child: FractionallySizedBox(
-    alignment: Alignment.centerLeft,
-    widthFactor: incomePercent,
-    child: Container(
-    decoration: BoxDecoration(
-    color: Colors.green,
-    borderRadius: BorderRadius.circular(20),
-    ),
-    ),
-    ),
-    ),
-    ),
-    const SizedBox(width: 10),
-    SizedBox(
-    width: 60,
-    child: Text(
-    "$symbol${income.toStringAsFixed(0)}",
-    textAlign: TextAlign.right,
-    style: const TextStyle(
-    fontSize: 12, fontWeight: FontWeight.w600),
-    ),
-    ),
-    ],
-    ),
-
-    const SizedBox(height: 6),
-
-    /// ---------- EXPENSE BAR ----------
-    Row(
-    children: [
-     SizedBox(
-    width: 60,
-    child: Text(
-      localizationController.getTextValue(
-        "LABEL_EXPENSE",
-      ),
-    style: TextStyle(
-    fontSize: 12, fontWeight: FontWeight.w500),
-    ),
-    ),
-    Expanded(
-    child: Container(
-    height: 10,
-    decoration: BoxDecoration(
-    color: Colors.grey.shade300,
-    borderRadius: BorderRadius.circular(20),
-    ),
-    child: FractionallySizedBox(
-    alignment: Alignment.centerLeft,
-    widthFactor: expensePercent,
-    child: Container(
-    decoration: BoxDecoration(
-    color: Colors.red,
-    borderRadius: BorderRadius.circular(20),
-    ),
-    ),
-    ),
-    ),
-    ),
-    const SizedBox(width: 10),
-    SizedBox(
-    width: 60,
-    child: Text(
-    "$symbol${expense.toStringAsFixed(0)}",
-    textAlign: TextAlign.right,
-    style: const TextStyle(
-    fontSize: 12, fontWeight: FontWeight.w600),
-    ),
-    ),
-    ],
-    ),
-    ],
-    ),
-    );
-    }),
-    ),
-    ],
-    ),
-    ),
-
-
-    ],
+            // _buildCard(
+            // child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            // children: [
+            //  Text(
+            // localizationController.getTextValue(
+            //   "MONTHLY_INCOME_EXPENSE",
+            // ),
+            // style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            // ),
+            //
+            // const SizedBox(height: 16),
+            //
+            // /// ---------- TOTALS ROW ----------
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(
+            //         "${localizationController.getTextValue(
+            // "TOTAL_INCOME_AMOUNT",
+            // )} $symbol${data.monthlyIncome.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+            //         style: const TextStyle(
+            //           fontSize: 14,
+            //           fontWeight: FontWeight.w700,
+            //           color: Colors.green,
+            //         ),
+            //       ),
+            //       Text(
+            //         "${localizationController.getTextValue(
+            // "TOTAL_EXPENSE_AMOUNT",
+            // )} $symbol${data.monthlyExpense.fold(0.0, (a, b) => a + b).toStringAsFixed(0)}",
+            //         style: const TextStyle(
+            //           fontSize: 14,
+            //           fontWeight: FontWeight.w700,
+            //           color: Colors.red,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            //
+            //
+            //   const SizedBox(height: 16),
+            // /// ---------------------------------
+            //
+            // Column(
+            // children: List.generate(12, (i) {
+            // final months = [
+            // "Jan","Feb","Mar","Apr","May","Jun",
+            // "Jul","Aug","Sep","Oct","Nov","Dec"
+            // ];
+            //
+            // final income = data.monthlyIncome[i];
+            // final expense = data.monthlyExpense[i];
+            //
+            // // Find the max for scaling bars
+            // final maxValue = [
+            // ...data.monthlyIncome,
+            // ...data.monthlyExpense
+            // ].reduce((a, b) => a > b ? a : b);
+            //
+            // double incomePercent = maxValue == 0 ? 0 : income / maxValue;
+            // double expensePercent = maxValue == 0 ? 0 : expense / maxValue;
+            //
+            // return Padding(
+            // padding: const EdgeInsets.symmetric(vertical: 10),
+            // child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            // children: [
+            // /// Month Title
+            // Text(
+            // months[i],
+            // style: const TextStyle(
+            // fontSize: 14, fontWeight: FontWeight.w600),
+            // ),
+            // const SizedBox(height: 6),
+            //
+            // /// ---------- INCOME BAR ----------
+            // Row(
+            // children: [
+            //  SizedBox(
+            // width: 60,
+            // child: Text(
+            // "${localizationController.getTextValue(
+            //   "LABEL_INCOME",
+            // )}",
+            // style: TextStyle(
+            // fontSize: 12, fontWeight: FontWeight.w500),
+            // ),
+            // ),
+            // Expanded(
+            // child: Container(
+            // height: 10,
+            // decoration: BoxDecoration(
+            // color: Colors.grey.shade300,
+            // borderRadius: BorderRadius.circular(20),
+            // ),
+            // child: FractionallySizedBox(
+            // alignment: Alignment.centerLeft,
+            // widthFactor: incomePercent,
+            // child: Container(
+            // decoration: BoxDecoration(
+            // color: Colors.green,
+            // borderRadius: BorderRadius.circular(20),
+            // ),
+            // ),
+            // ),
+            // ),
+            // ),
+            // const SizedBox(width: 10),
+            // SizedBox(
+            // width: 60,
+            // child: Text(
+            // "$symbol${income.toStringAsFixed(0)}",
+            // textAlign: TextAlign.right,
+            // style: const TextStyle(
+            // fontSize: 12, fontWeight: FontWeight.w600),
+            // ),
+            // ),
+            // ],
+            // ),
+            //
+            // const SizedBox(height: 6),
+            //
+            // /// ---------- EXPENSE BAR ----------
+            // Row(
+            // children: [
+            //  SizedBox(
+            // width: 60,
+            // child: Text(
+            //   localizationController.getTextValue(
+            //     "LABEL_EXPENSE",
+            //   ),
+            // style: TextStyle(
+            // fontSize: 12, fontWeight: FontWeight.w500),
+            // ),
+            // ),
+            // Expanded(
+            // child: Container(
+            // height: 10,
+            // decoration: BoxDecoration(
+            // color: Colors.grey.shade300,
+            // borderRadius: BorderRadius.circular(20),
+            // ),
+            // child: FractionallySizedBox(
+            // alignment: Alignment.centerLeft,
+            // widthFactor: expensePercent,
+            // child: Container(
+            // decoration: BoxDecoration(
+            // color: Colors.red,
+            // borderRadius: BorderRadius.circular(20),
+            // ),
+            // ),
+            // ),
+            // ),
+            // ),
+            // const SizedBox(width: 10),
+            // SizedBox(
+            // width: 60,
+            // child: Text(
+            // "$symbol${expense.toStringAsFixed(0)}",
+            // textAlign: TextAlign.right,
+            // style: const TextStyle(
+            // fontSize: 12, fontWeight: FontWeight.w600),
+            // ),
+            // ),
+            // ],
+            // ),
+            // ],
+            // ),
+            // );
+            // }),
+            // ),
+            // ],
+            // ),
+            // ),
+          ],
         ),
       ),
     );
@@ -434,7 +684,7 @@ class ReportsScreen extends StatelessWidget {
         children: [
           Text(title,
               style:
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
           const SizedBox(height: 6),
           Text(
             "$symbol$value",
@@ -465,10 +715,10 @@ class ReportsScreen extends StatelessWidget {
   }
 
   Widget _buildToggle(
-      String label,
-      ReportType type,
-      ReportsController controller,
-      ) {
+    String label,
+    ReportType type,
+    ReportsController controller,
+  ) {
     final isSelected = controller.selected == type;
     return GestureDetector(
       onTap: () => controller.changeReport(type),
@@ -511,10 +761,6 @@ class ReportsScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';

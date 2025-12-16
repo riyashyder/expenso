@@ -8,7 +8,7 @@ class UserProfile {
   final String currencyCode;
   final String currencyName;
   final String currencySymbol;
-  final int avatar;
+  final int? avatar;
 
   UserProfile({
     required this.id,

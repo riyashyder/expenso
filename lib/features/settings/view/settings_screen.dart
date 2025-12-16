@@ -118,11 +118,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.clear();
 
+
       if (context.mounted) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const LoginPage()),
+              (route) => false, // remove all previous routes
         );
       }
+      // if (context.mounted) {
+      //   Navigator.of(context).pushReplacement(
+      //     MaterialPageRoute(builder: (_) => const LoginPage()),
+      //   );
+      // }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

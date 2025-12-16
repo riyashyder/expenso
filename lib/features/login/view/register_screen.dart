@@ -1,9 +1,12 @@
-  import 'package:expense_tracker/shared/widgets/custom_widgets/custom_textfield.dart';
+  import 'package:expense_tracker/core/utils/functions/common_functions.dart';
+import 'package:expense_tracker/shared/widgets/custom_widgets/custom_textfield.dart';
   import 'package:flutter/material.dart';
   import 'package:provider/provider.dart';
 
 
-  import '../../../core/utils/validators/common_validators-ThetaZero-1.dart';
+  import '../../../core/utils/functions/common_functions.dart';
+import '../../../core/utils/functions/common_functions.dart' as validators;
+import '../../../core/utils/validators/common_validators-ThetaZero-1.dart';
 import '../../../core/utils/validators/common_validators.dart';
   import '../../../shared/widgets/custom_widgets/app_elevated_button.dart';
   import '../../../shared/widgets/styles/styles.dart';
@@ -29,6 +32,30 @@ import '../controller/login_controller.dart';
   class _RegisterFormState extends State<RegisterForm> {
     final formKey = GlobalKey<FormState>();
     final confirmPasswordKey = GlobalKey<FormFieldState>(); //  add this
+    bool isFormValid = false; // Track form validity
+
+
+    void updateFormValidity(RegisterController controller) {
+      // Check all required fields and password match
+      final fullName = controller.fullNameController.text.trim();
+      final lastName = controller.lastNameController.text.trim();
+      final email = controller.emailController.text.trim();
+      final password = controller.passwordController.text.trim();
+      final confirmPassword = controller.confirmPasswordController.text.trim();
+
+      final passwordRegex = RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$');
+
+      final valid = fullName.length >= 3 &&
+          lastName.length >= 3 &&
+          email.isNotEmpty &&
+          validators.isValidEmail(email) &&
+          passwordRegex.hasMatch(password) &&
+          confirmPassword == password;
+
+      setState(() {
+        isFormValid = valid;
+      });
+    }
 
     @override
     void initState() {
@@ -45,21 +72,44 @@ import '../controller/login_controller.dart';
         );
 
         registerController.passwordController.addListener(() {
-          confirmPasswordKey.currentState?.validate(); //  re-run confirm validator
+          confirmPasswordKey.currentState?.validate();
+          updateFormValidity(registerController);
         });
 
-        registerController.passwordController.addListener(() {
-          if (formKey.currentState != null) {
-            formKey.currentState!.validate();
-          }
+        registerController.confirmPasswordController.addListener(() {
+          updateFormValidity(registerController);
         });
+
+        registerController.fullNameController.addListener(() {
+          updateFormValidity(registerController);
+        });
+
+        registerController.lastNameController.addListener(() {
+          updateFormValidity(registerController);
+        });
+
+        registerController.emailController.addListener(() {
+          updateFormValidity(registerController);
+        });
+
+        // registerController.passwordController.addListener(() {
+        //   confirmPasswordKey.currentState?.validate(); //  re-run confirm validator
+        // });
+
+
+
+        // registerController.passwordController.addListener(() {
+        //   if (formKey.currentState != null) {
+        //     // formKey.currentState!.validate();
+        //   }
+        // });
 
         // When confirm password changes, revalidate password too (optional)
-        registerController.confirmPasswordController.addListener(() {
-          if (formKey.currentState != null) {
-            formKey.currentState!.validate();
-          }
-        });
+        // registerController.confirmPasswordController.addListener(() {
+        //   if (formKey.currentState != null) {
+        //     // formKey.currentState!.validate();
+        //   }
+        // });
         registerController.clearAll();
         registerController.mobileController.text =
             (widget.number ?? '').replaceFirst('+94 ', '');
@@ -194,9 +244,9 @@ import '../controller/login_controller.dart';
                       showEyeIcon: true,
                       isEmail: false,
                       svgname: 'assets/svg/svgcopy/icn_password_lock copy.svg',
-                      onchange: (_) {
+                      onchange: (password) {
                         registerController.checkFormCompletion();
-                        formKey.currentState?.validate(); // ✅ triggers confirm field validation too
+                        // formKey.currentState?.validate(); // ✅ triggers confirm field validation too
                       },
                       validator: (value) {
                         final password = value?.trim() ?? "";
@@ -231,7 +281,7 @@ import '../controller/login_controller.dart';
                       isEmail: false,
                       enabled: !registerController.isLoading,
                       svgname: 'assets/svg/svgcopy/icn_password_lock copy.svg',
-                      onchange: (_) {
+                      onchange: (confirmPassword) {
                         registerController.checkFormCompletion();
                         formKey.currentState?.validate(); // ✅ triggers password validation too
                       },
@@ -352,7 +402,7 @@ import '../controller/login_controller.dart';
                               "REGISTER",
                             ),
                             textStyle: AppthemeData.buttonStyle,
-                            onPressed: () async {
+                            onPressed:isFormValid ? () async {
                               if (!formKey.currentState!.validate()) return; // ✅ validate form
                               registerController.isLoading = true;
                               final bool result = await registerController.sendSecurityCode(
@@ -421,7 +471,7 @@ import '../controller/login_controller.dart';
                                   SnackBar(content: Text("Failed to send OTP")),
                                 );
                               }
-                            },
+                            } : null,
 
                             // onPressed: registerController.isFormValid
                             //     ? () async {

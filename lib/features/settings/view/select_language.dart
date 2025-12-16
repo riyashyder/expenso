@@ -1,9 +1,11 @@
+import 'package:expense_tracker/shared/widgets/styles/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/localization/app_localization_controller.dart';
+import '../../../utils/devices/get_localization_provider.dart';
 import '../../navigationScreens/view/bottom_navigation_bar.dart';
 
 
@@ -17,11 +19,12 @@ class SelectLanguage extends StatefulWidget {
 class _SelectLanguageState extends State<SelectLanguage> {
   final List<Map<String, String>> languages = [
     {'English': 'en'},
-    {'Japanese': 'jp'}
+    {'日本語': 'jp'}
   ];
 
   @override
   Widget build(BuildContext context) {
+    final localizationController = getLocalizationController(context, listen: false);
     var languageProvider =
     Provider.of<AppLocalizationController>(context, listen: false);
     String selectedLanguage = languageProvider.appLanguage;
@@ -29,7 +32,7 @@ class _SelectLanguageState extends State<SelectLanguage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-         'SELECT LANGUAGE'
+          localizationController.getTextValue("SELECT_LANGUAGE"),
         ),
         leading: GestureDetector(
           onTap: () {
@@ -59,20 +62,29 @@ class _SelectLanguageState extends State<SelectLanguage> {
               trailing: Radio<String>(
                 value: languageCode,
                 groupValue: selectedLanguage,
-                activeColor: Colors.orange,
+                activeColor: AppthemeData.primaryBackground,
                 onChanged: (String? value) async {
                   if (value != null) {
                     languageProvider.changeLanguage(value);
-                    final prefs = await SharedPreferences.getInstance();
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              NavigatioScreen()), // Replace with your dashboard widget
-                          (Route<dynamic> route) => false,
-                    );
+
+                    Navigator.pop(context, value); // return selected language
                   }
                 },
+
+                // onChanged: (String? value) async {
+                //   if (value != null) {
+                //     languageProvider.changeLanguage(value);
+                //     final prefs = await SharedPreferences.getInstance();
+                //     Navigator.pop(context);
+                //     // Navigator.pushAndRemoveUntil(
+                //     //   context,
+                //     //   MaterialPageRoute(
+                //     //       builder: (context) =>
+                //     //           NavigatioScreen()), // Replace with your dashboard widget
+                //     //       (Route<dynamic> route) => false,
+                //     // );
+                //   }
+                // },
               ),
             );
           }).toList(),

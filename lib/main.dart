@@ -25,6 +25,7 @@ import 'features/login/controller/login_controller.dart';
 import 'features/login/controller/register_controller.dart';
 import 'features/navigationScreens/controller/bottom_nav_provider.dart';
 import 'features/navigationScreens/view/bottom_navigation_bar.dart';
+import 'features/notifications/controller/notification_provider.dart';
 import 'features/onboarding/view/welcome_view.dart';
 import 'features/report/controller/report_controller.dart';
 import 'features/settings/controller/currency_provider.dart';
@@ -65,9 +66,18 @@ void main() async {
         ChangeNotifierProvider(create: (_) => TransactionsController()),
         ChangeNotifierProvider(create: (_) => TransactionApiController()),
         ChangeNotifierProvider(create: (_) => ReportsController()),
-        ChangeNotifierProvider(create: (_) => ForgotPassEmailController()),
+        ChangeNotifierProvider(
+          create: (_) => OtpTimerController(0),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ForgotPassEmailController(),
+        ),
+        // ChangeNotifierProvider(create: (_) => ForgotPassEmailController()),
         ChangeNotifierProvider(create: (_) => AppLocalizationController()),
         ChangeNotifierProvider(create: (context) => LoginController()),
+        ChangeNotifierProvider(
+          create: (_) => NotificationProvider()..loadUnreadCount(),
+        ),
         ChangeNotifierProvider(create: (context) => RegisterController()),
         ChangeNotifierProvider(create: (context) => ConnectivityProvider()),
         ChangeNotifierProvider(create: (context) => BottomNavProvider()),
@@ -75,17 +85,24 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SettingsController()),
         ChangeNotifierProvider(create: (_) => ResetPasswordController()),
         ChangeNotifierProvider(create: (_) => ExportController()),
+        // ChangeNotifierProvider(
+        //   create: (_) => OtpTimerController(60),
+        // ),
         ChangeNotifierProvider(
-          create: (_) => OtpTimerController(60), // pass int here
+          create: (_) => ForgotPassCodeController(),
         ),
-        ChangeNotifierProxyProvider<OtpTimerController, ForgotPassCodeController>(
-          create: (context) => ForgotPassCodeController(
-            timerController: context.read<OtpTimerController>(),
-          ),
-          update: (context, otpTimer, prev) => ForgotPassCodeController(
-            timerController: otpTimer,
-          ),
-        ),
+
+        // ChangeNotifierProvider(
+        //   create: (_) => OtpTimerController(60), // pass int here
+        // ),
+        // ChangeNotifierProxyProvider<OtpTimerController, ForgotPassCodeController>(
+        //   create: (context) => ForgotPassCodeController(
+        //     timerController: context.read<OtpTimerController>(),
+        //   ),
+        //   update: (context, otpTimer, prev) => ForgotPassCodeController(
+        //     timerController: otpTimer,
+        //   ),
+        // ),
         // ChangeNotifierProvider(create: (_) => CategoryController())
 
       ],

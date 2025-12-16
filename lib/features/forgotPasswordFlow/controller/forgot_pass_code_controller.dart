@@ -12,6 +12,7 @@ import '../../login/controller/register_controller.dart';
 import '../../login/view/login_raf_view.dart';
 import '../../login/view/login_view.dart';
 import '../controller/otp_timer_controller.dart';
+import '../view/set_password_screen.dart';
 
 class ForgotPassCodeController extends ChangeNotifier {
   final List<TextEditingController> otpControllers =
@@ -19,13 +20,13 @@ class ForgotPassCodeController extends ChangeNotifier {
   final List<FocusNode> otpFocusNodes =
   List.generate(6, (_) => FocusNode());
 
-  final OtpTimerController timerController;
+  final OtpTimerController? timerController;
 
   bool isOtpComplete = false;
   bool isLoading = false;
   int? otpValidityTimeInSeconds;
 
-  ForgotPassCodeController({required this.timerController}) {
+  ForgotPassCodeController({this.timerController}) {
     for (var controller in otpControllers) {
       controller.addListener(checkOtpCompletion);
     }
@@ -79,6 +80,190 @@ class ForgotPassCodeController extends ChangeNotifier {
       );
     }
   }
+
+  Future<void> verifyOtpRegister(
+      BuildContext context,
+      String email,
+      List<TextEditingController> otpControllers,
+      dynamic widget,
+      ) async {
+    String otp = otpControllers.map((e) => e.text).join();
+
+    if (otp.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizationController().getTextValue("OTP_FIELD_ERROR"),
+          ),
+        ),
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/verify-otp'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email": email,
+          "purpose": "FORGOT_PASSWORD",
+          "otp": otp,
+        }),
+      );
+
+      print("forgot password response");
+      print(response.body);
+
+      final result = jsonDecode(response.body);
+
+      // ✅ SUCCESS
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          result['success'] == true) {
+
+        if (context.mounted) {
+          for (var controller in otpControllers) {
+            controller.clear();
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['message'] ?? "OTP verified successfully"),
+              backgroundColor: Colors.black,
+            ),
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SetPasswordScreen(email: email),
+            ),
+          );
+        }
+      }
+      // ❌ ERROR FROM API (INVALID OTP, EXPIRED OTP, ETC)
+      else {
+        final errorMessage =
+            result['error']?['message'] ?? "Failed to verify OTP";
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.black,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("An error occurred: $e"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  // Future<void> verifyOtpRegister(
+  //     BuildContext context,
+  //     String email,
+  //     List<TextEditingController> otpControllers,
+  //     dynamic widget,
+  //     ) async {
+  //   String otp = otpControllers.map((e) => e.text).join();
+  //
+  //   if (otp.length < 6) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text(AppLocalizationController().getTextValue("OTP_FIELD_ERROR"))),
+  //     );
+  //     return;
+  //   }
+  //
+  //   bool isLoading = true;
+  //
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/verify-otp'),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: jsonEncode({
+  //         "email": email,
+  //         "purpose": "FORGOT_PASSWORD",
+  //         "otp": otp,
+  //       }),
+  //     );
+  //
+  //     isLoading = false;
+  //
+  //     print("forgot password response");
+  //     print(response.body);
+  //
+  //     // if (response.statusCode == 200 || response.statusCode == 201) {
+  //     //   final result = jsonDecode(response.body);
+  //     //
+  //     //   if (true) {
+  //     //     // Clear OTP fields
+  //     //     for (var controller in otpControllers) {
+  //     //       controller.clear();
+  //     //     }
+  //     //
+  //     //     if (context.mounted) {
+  //     //
+  //     //       final message = result['message'] ?? "OTP verified successfully!";
+  //     //       ScaffoldMessenger.of(context).showSnackBar(
+  //     //         SnackBar(content: Text(message)),
+  //     //       );
+  //     //       // ScaffoldMessenger.of(context).showSnackBar(
+  //     //       //   const SnackBar(content: Text("OTP verified successfully!")),
+  //     //       // );
+  //     //
+  //     //       // Call register API
+  //     //     }
+  //     //   }
+  //     // }
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final result = jsonDecode(response.body);
+  //
+  //       if (context.mounted) {
+  //         // Clear OTP fields
+  //         for (var controller in otpControllers) {
+  //           controller.clear();
+  //         }
+  //
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text(result['message'] ?? "OTP verified successfully")),
+  //         );
+  //
+  //         //  NAVIGATE TO SET PASSWORD SCREEN995121
+  //         Navigator.pushReplacement(
+  //           context,
+  //           MaterialPageRoute(
+  //             builder: (_) => SetPasswordScreen(
+  //               email: email, //  PASS EMAIL HERE
+  //             ),
+  //           ),
+  //         );
+  //       }
+  //     }
+  //
+  //
+  //     else {
+  //       if (context.mounted) {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(content: Text("Failed to verify OTP. Try again.")),
+  //         );
+  //       }
+  //     }
+  //   } catch (e) {
+  //     isLoading = false;
+  //     if (context.mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("An error occurred: $e")),
+  //       );
+  //     }
+  //   }
+  // }
 
   Future<void> verifyOtp(
       BuildContext context,
@@ -306,7 +491,7 @@ class ForgotPassCodeController extends ChangeNotifier {
     for (var node in otpFocusNodes) {
       node.dispose();
     }
-    timerController.dispose();
+    timerController?.dispose();
     super.dispose();
   }
 }
