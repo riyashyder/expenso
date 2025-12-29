@@ -115,7 +115,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      "Filter",
+                      getLocalizationController(context, listen: false)
+                          .getTextValue("FILTER"),
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,

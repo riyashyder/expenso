@@ -17,6 +17,11 @@ class AppLocalizationController extends ChangeNotifier {
         "jp": "手軽に支出を管理しましょう"
       },
 
+    "FILTER": {
+      "en": "Filter",
+      "ar": "تصفية",
+      "jp": "フィルター"
+    },
       "WELCOME_DESCRIPTION": {
         "en": "Think of this app as your smart, reliable companion for money management. It’s always with you, ready to log expenses, remind you of bills, and celebrate your financial milestones. From beginners just starting out, to budget experts looking for detailed analysis, this app adapts to your lifestyle. It’s not just about tracking—it’s about building financial freedom, step by step.",
         "ar": "فكر في هذا التطبيق كرفيق ذكي وموثوق لإدارة أموالك. فهو دائمًا معك، جاهز لتسجيل النفقات، وتذكيرك بالفواتير، والاحتفال بإنجازاتك المالية. من المبتدئين الذين يبدأون للتو إلى خبراء الميزانية الذين يبحثون عن تحليل مفصل، يتكيف هذا التطبيق مع أسلوب حياتك. الأمر لا يتعلق فقط بالتتبع – بل ببناء حرية مالية خطوة بخطوة.",

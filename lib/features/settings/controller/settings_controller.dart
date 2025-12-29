@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // import '../../forgotPasswordFlow/controller/reset_new_password_controller.dart';
 import '../../../core/constants/api_constants.dart';
@@ -173,9 +174,36 @@ class SettingsController extends ChangeNotifier {
     final loc = getLocalizationController(context, listen: false);
 
     return [
-      SettingsItem(title: loc.getTextValue("PRE_TERMS_OF_SERVICE"), onTap: () {}),
-      SettingsItem(title: loc.getTextValue("PRE_PRIVACY_POLICY"), onTap: () {}),
-      SettingsItem(title: loc.getTextValue("PRE_CONTACT_US"), onTap: () {}),
+      SettingsItem(title: loc.getTextValue("PRE_TERMS_OF_SERVICE"), onTap: () {
+        launchUrl(
+          Uri.parse(
+            "https://app-expenso-tracker.web.app/legal/Expenso_Terms_of_Use.pdf",
+          ),
+          mode: LaunchMode.externalApplication,
+        );
+      }),
+      SettingsItem(title: loc.getTextValue("PRE_PRIVACY_POLICY"), onTap: () async {
+        final uri = Uri.parse(
+          "https://app-expenso-tracker.web.app/legal/Expenso_Privacy_Policy.pdf",
+        );
+
+        try {
+          final launched = await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
+
+          if (!launched) {
+            throw 'Could not launch URL';
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Unable to open link")),
+          );
+        }
+      },
+      ),
+      // SettingsItem(title: loc.getTextValue("PRE_CONTACT_US"), onTap: () {}),
       // SettingsItem(
       //   title: loc.getTextValue("RESET_PASSWORD"),
       //   onTap: () {
