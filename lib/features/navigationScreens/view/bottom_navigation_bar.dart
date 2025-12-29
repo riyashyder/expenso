@@ -135,7 +135,7 @@ class _NavigationScreenState extends State<NavigatioScreen> {
 }
 
 // ------------------------------------------------------
-// 🔥 BUBBLE FLOATING NAV ITEM (animated pill like your demo)
+//  BUBBLE FLOATING NAV ITEM (animated pill like your demo)
 // ------------------------------------------------------
 Widget _navItem({
   required IconData icon,

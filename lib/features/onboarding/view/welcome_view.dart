@@ -31,7 +31,7 @@ class _WelcomeViewState extends State<WelcomeView> {
   void initState() {
     super.initState();
     _checkAccessToken();
-    setupFCM();
+    // setupFCM();
   }
 
   void setupFCM() async {

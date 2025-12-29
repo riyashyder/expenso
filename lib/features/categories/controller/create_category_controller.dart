@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:expense_tracker/core/constants/api_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,8 +38,8 @@ class CategoryController with ChangeNotifier {
 
   List<CategoryModel> categories = [];
 
-  final String baseUrl =
-      "https://z0vx5pwf-5000.inc1.devtunnels.ms/api/category";
+  // final String baseUrl =
+  //     "https://z0vx5pwf-5000.inc1.devtunnels.ms/api/category";
 
   // -------------------- ICONS --------------------
   final List<CategoryIcon> icons = [
@@ -94,7 +95,7 @@ class CategoryController with ChangeNotifier {
       }
 
       final response = await http.get(
-        Uri.parse(baseUrl),
+        Uri.parse('${ApiConstants.prodBaseUrl}/api/category'),
         headers: {"Authorization": "Bearer $token"},
       );
 
@@ -126,7 +127,7 @@ class CategoryController with ChangeNotifier {
       }
 
       final response = await http.post(
-        Uri.parse(baseUrl),
+        Uri.parse('${ApiConstants.prodBaseUrl}/api/category'),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
@@ -177,7 +178,7 @@ class CategoryController with ChangeNotifier {
       }
 
       final response = await http.patch(
-        Uri.parse(baseUrl),
+        Uri.parse('${ApiConstants.prodBaseUrl}/api/category'),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",
@@ -223,7 +224,7 @@ class CategoryController with ChangeNotifier {
       }
 
       final response = await http.delete(
-        Uri.parse("$baseUrl/$categoryId"),
+        Uri.parse("${'${ApiConstants.prodBaseUrl}/api/category'}/$categoryId"),
         headers: {"Authorization": "Bearer $token"},
       );
 

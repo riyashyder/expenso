@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/api_constants.dart';
+
 class DashboardApiService {
-  static const String baseUrl = "https://z0vx5pwf-5000.inc1.devtunnels.ms/api/dashboard";
+  static final String baseUrl = "${ApiConstants.prodBaseUrl}/api/dashboard";
 
   Future<Map<String, String>> _headers() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

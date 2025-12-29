@@ -102,7 +102,8 @@ class ForgotPassCodeController extends ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/verify-otp'),
+
+        Uri.parse('${ApiConstants.prodBaseUrl}/api/verify-otp'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "email": email,
@@ -284,7 +285,7 @@ class ForgotPassCodeController extends ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/verify-otp'),
+        Uri.parse('${ApiConstants.prodBaseUrl}/api/verify-otp'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "email": email,
@@ -316,7 +317,7 @@ class ForgotPassCodeController extends ChangeNotifier {
 
             // Call register API
             final registerResponse = await http.post(
-              Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/register'),
+              Uri.parse('${ApiConstants.prodBaseUrl}/api/register'),
               headers: {"Content-Type": "application/json"},
               body: jsonEncode({
                 "first_name": widget.firstName,

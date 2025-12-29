@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/api_constants.dart';
 import '../model/notification_model.dart';
 
 class NotificationService {
-  static const String baseUrl =
-      "https://z0vx5pwf-5000.inc1.devtunnels.ms/api/notification";
+  static final String baseUrl =
+      "${ApiConstants.prodBaseUrl}/api/notification";
 
   static Future<Map<String, String>> _headers() async {
     final prefs = await SharedPreferences.getInstance();

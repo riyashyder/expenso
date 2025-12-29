@@ -75,79 +75,82 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                     ],
                   ),
-                  child: IntrinsicHeight( // FIX
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch, // IMPORTANT
-                      children: [
-                        // Left accent bar
-                        Container(
-                          width: 4,
-                          decoration: BoxDecoration(
-                            color: isUnread
-                                ? theme.primaryColor
-                                : Colors.transparent,
-                            borderRadius: const BorderRadius.horizontal(
-                              left: Radius.circular(16),
-                            ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start, // IMPORTANT
+                    children: [
+                      // Left accent bar
+                      Container(
+                        width: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isUnread
+                              ? theme.primaryColor
+                              : Colors.transparent,
+                          borderRadius: const BorderRadius.horizontal(
+                            left: Radius.circular(16),
                           ),
                         ),
+                      ),
 
-                        Expanded(
-                          child: Theme(
-                            data: theme.copyWith(dividerColor: Colors.transparent),
-                            child: ExpansionTile(
-                              tilePadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 10,
-                              ),
-                              onExpansionChanged: (expanded) {
-                                if (expanded && isUnread) {
-                                  provider.markRead(notification.id);
-                                }
-                              },
-                              leading: CircleAvatar(
-                                radius: 22,
-                                backgroundColor: isUnread
-                                    ? theme.primaryColor.withOpacity(0.15)
-                                    : Colors.grey.withOpacity(0.15),
-                                child: Icon(
-                                  Icons.notifications,
-                                  color: isUnread
-                                      ? theme.primaryColor
-                                      : Colors.grey,
-                                ),
-                              ),
-                              title: Text(
-                                notification.title,
-                                style: theme.textTheme.bodyLarge!.copyWith(
-                                  fontWeight:
-                                  isUnread ? FontWeight.w600 : FontWeight.w400,
-                                ),
-                              ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  notification.createdAt,
-                                  style: theme.textTheme.bodySmall!
-                                      .copyWith(color: Colors.grey),
-                                ),
-                              ),
-                              children: [
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                                  child: Text(
-                                    notification.message,
-                                    style: theme.textTheme.bodyMedium!
-                                        .copyWith(height: 1.5),
-                                  ),
-                                ),
-                              ],
+                      Expanded(
+                        child: Theme(
+                          data: theme.copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            tilePadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
                             ),
+                            onExpansionChanged: (expanded) {
+                              if (expanded && isUnread) {
+                                provider.markRead(notification.id);
+                              }
+                            },
+                            leading: CircleAvatar(
+                              radius: 22,
+                              backgroundColor: isUnread
+                                  ? theme.primaryColor.withOpacity(0.15)
+                                  : Colors.grey.withOpacity(0.15),
+                              child: Icon(
+                                Icons.notifications,
+                                color: isUnread
+                                    ? theme.primaryColor
+                                    : Colors.grey,
+                              ),
+                            ),
+                            title: Text(
+                              notification.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyLarge!.copyWith(
+                                fontWeight:
+                                isUnread ? FontWeight.w600 : FontWeight.w400,
+                              ),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                notification.createdAt,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodySmall!
+                                    .copyWith(color: Colors.grey),
+                              ),
+                            ),
+                            children: [
+                              Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                child: Text(
+                                  notification.message,
+                                  style: theme.textTheme.bodyMedium!
+                                      .copyWith(height: 1.5),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -274,6 +277,8 @@ class _DeleteBackground extends StatelessWidget {
               localizationController.getTextValue(
                 "DELETE",
               ),
+              softWrap: false,
+              overflow: TextOverflow.fade,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,

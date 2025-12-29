@@ -173,7 +173,7 @@ class ForgotPassEmail extends StatelessWidget {
 
                                           try {
                                             final response = await http.post(
-                                              Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/send-otp"),
+                                              Uri.parse("${ApiConstants.prodBaseUrl}/api/send-otp"),
                                               headers: {
                                                 "Content-Type": "application/json",
                                               },

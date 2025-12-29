@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:expense_tracker/features/login/view/widget/custom_textfield.dart';
 import 'package:expense_tracker/utils/devices/get_localization_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/api_constants.dart';
 import '../../../core/utils/helpers/apiCalls/makeHttpRequest.dart';
 import '../../../shared/widgets/custom_widgets/app_elevated_button.dart';
 import '../../../shared/widgets/custom_widgets/page_transition.dart';
@@ -50,6 +52,31 @@ class _LoginFormState extends State<LoginForm> {
       );
       controller.clearForm();
     });
+  }
+  Future<String?> setupFCM() async {
+    final FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    // Request permissions
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // Get token
+    String? token = await FirebaseMessaging.instance.getToken();
+    print("FCM Token: $token");
+
+    // Foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Foreground message: ${message.notification?.title}");
+    });
+
+    // When app is opened by tapping notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("Notification opened: ${message.data}");
+    });
+    return token;
   }
 
   @override
@@ -173,9 +200,10 @@ class _LoginFormState extends State<LoginForm> {
                         loginController.notify();
 
                         try {
+                          String? token = await setupFCM();
                           final response = await http.post(
                             Uri.parse(
-                              'https://z0vx5pwf-5000.inc1.devtunnels.ms/api/login',
+                              '${ApiConstants.prodBaseUrl}/api/login',
                             ),
                             headers: {
                               "Content-Type": "application/json",
@@ -186,6 +214,7 @@ class _LoginFormState extends State<LoginForm> {
                               "password": loginController
                                   .passwordController.text
                                   .trim(),
+                              "fcm_token":token
                             }),
                           );
 

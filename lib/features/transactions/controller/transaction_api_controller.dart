@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/api_constants.dart';
+
 class TransactionApiController extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -21,7 +23,7 @@ class TransactionApiController extends ChangeNotifier {
       final token = prefs.getString('access_token');
       if (token == null) throw Exception("Token not found");
 
-      final url = Uri.parse('https://z0vx5pwf-5000.inc1.devtunnels.ms/api/expense');
+      final url = Uri.parse('${ApiConstants.prodBaseUrl}/api/expense');
 
       final response = await http.post(
         url,
@@ -70,7 +72,7 @@ class TransactionApiController extends ChangeNotifier {
 
       // Add from and to as query parameters
       final url = Uri.parse(
-          'https://z0vx5pwf-5000.inc1.devtunnels.ms/api/expense?from=$from&to=$to');
+          '${ApiConstants.prodBaseUrl}/api/expense?from=$from&to=$to');
 
       final response = await http.get(
         url,

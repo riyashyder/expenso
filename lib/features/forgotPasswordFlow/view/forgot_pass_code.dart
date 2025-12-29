@@ -80,7 +80,7 @@ class _ForgotPassCodeState extends State<ForgotPassCode> {
 
     final controller = Provider.of<ForgotPassCodeController>(context, listen: false);
     final requestBody = {"email": email, "purpose": purpose};
-    final url = Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/send-otp");
+    final url = Uri.parse("${ApiConstants.prodBaseUrl}/api/send-otp");
 
     try {
       final response = await http.post(

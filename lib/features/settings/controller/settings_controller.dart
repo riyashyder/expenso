@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // import '../../forgotPasswordFlow/controller/reset_new_password_controller.dart';
+import '../../../core/constants/api_constants.dart';
 import '../model/user_profile.dart';
 import '../model/settings_item.dart';
 import '../../../utils/devices/get_localization_provider.dart';
@@ -27,7 +28,7 @@ class SettingsController extends ChangeNotifier {
       throw Exception("No auth token found");
     }
 
-    final url = Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/user");
+    final url = Uri.parse("${ApiConstants.prodBaseUrl}/api/user");
 
     final response = await http.patch(
       url,
@@ -64,7 +65,7 @@ class SettingsController extends ChangeNotifier {
         return;
       }
 
-      final url = Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/user");
+      final url = Uri.parse("${ApiConstants.prodBaseUrl}/api/user");
       final response = await http.get(
         url,
         headers: {
@@ -234,7 +235,7 @@ Future<List<CurrencyModel>> fetchCurrencies() async {
   final token = prefs.getString("access_token");
 
   final response = await http.get(
-    Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/currency"),
+    Uri.parse("${ApiConstants.prodBaseUrl}/api/currency"),
     headers: {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",

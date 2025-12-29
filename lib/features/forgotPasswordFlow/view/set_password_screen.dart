@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../core/constants/api_constants.dart';
 import '../../../core/localization/app_localization_controller.dart';
 import '../../../core/theme/styles/styles.dart';
 import '../../../shared/widgets/custom_widgets/app_elevated_button.dart';
@@ -86,7 +87,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/forgot-password"),
+        Uri.parse("${ApiConstants.prodBaseUrl}/api/forgot-password"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "email": widget.email,

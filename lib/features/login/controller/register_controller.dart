@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/api_constants.dart';
 import '../../../core/localization/app_localization_controller.dart';
 import '../../../core/utils/helpers/apiCalls/makeHttpRequest.dart';
 import '../../../core/utils/validators/common_validators-ThetaZero-1.dart';
@@ -205,7 +206,7 @@ class RegisterController with ChangeNotifier {
     if (email.isEmpty) return false;
 
     final requestBody = {"email": email, "purpose": purpose};
-    final url = Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/send-otp");
+    final url = Uri.parse("${ApiConstants.prodBaseUrl}/api/send-otp");
 
 
     try {
@@ -615,7 +616,7 @@ class RegisterController with ChangeNotifier {
 
     isRegisterLoading = true;
     notifyListeners();
-    final url = Uri.parse("https://z0vx5pwf-5000.inc1.devtunnels.ms/api/register");
+    final url = Uri.parse("${ApiConstants.prodBaseUrl}/api/register");
 
     try {
 

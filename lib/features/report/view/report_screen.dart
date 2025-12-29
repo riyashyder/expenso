@@ -81,7 +81,7 @@ class ReportsScreen extends StatelessWidget {
             /// -----------------------------------
             IntrinsicHeight(
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch, // ⭐ IMPORTANT
+                crossAxisAlignment: CrossAxisAlignment.stretch, //  IMPORTANT
                 children: [
                   Expanded(
                     child: _valueCard(

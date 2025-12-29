@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart'; // for mobile directory
+import '../../../core/constants/api_constants.dart';
 import '../../../core/utils/helpers/snackbar_utils.dart';
 import '../model/export_options.dart';
 
@@ -37,7 +38,8 @@ class ExportController extends ChangeNotifier {
         return;
       }
 
-      final String baseUrl = "https://z0vx5pwf-5000.inc1.devtunnels.ms/api/export-expense";
+      final String baseUrl = "${ApiConstants.prodBaseUrl}/api/export-expense";
+      // final String baseUrl = "https://z0vx5pwf-5000.inc1.devtunnels.ms/api/export-expense";
       final String from = fromDate.toIso8601String().split('T').first;
       final String to = toDate.toIso8601String().split('T').first;
       final Uri url = Uri.parse("$baseUrl?from=$from&to=$to");

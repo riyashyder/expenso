@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/api_constants.dart';
+
 class ResetSettingsPasswordController extends ChangeNotifier {
   bool isLoading = false;
 
@@ -24,7 +26,7 @@ class ResetSettingsPasswordController extends ChangeNotifier {
 
       final response = await http.post(
         Uri.parse(
-          "https://z0vx5pwf-5000.inc1.devtunnels.ms/api/reset-password",
+          "${ApiConstants.prodBaseUrl}/api/reset-password",
         ),
         headers: {
           "Content-Type": "application/json",
